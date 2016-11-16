@@ -1,0 +1,23 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Delete All
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button icon-only  (click)="dismiss()">
+                <span color="primary" (click)="dismiss()">Cancel</span>
+                <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-card>
+        <ion-card-content>
+            {{contentMessage}}
+        </ion-card-content>
+
+    </ion-card>
+    <button ion-button color="danger" block (click)="carryOut()" >OK </button>
+</ion-content>

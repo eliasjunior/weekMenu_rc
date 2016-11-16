@@ -1,0 +1,29 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Recipes to cook
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button icon-only (click)="dismiss()">
+                <span color="primary" showWhen="ios" (click)="dismiss()">Cancel</span>
+                <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+    <ion-list >
+        <ion-item *ngFor="let recipe of recipes" (click)="selectItem(recipe)">
+
+            <ion-avatar item-left>
+                <img src="images/{{recipe.mainMeal.mealDetail.icon}}">
+            </ion-avatar>
+            <h2>{{recipe.name}}</h2>
+           <p>{{recipe.countIngredient}} ingredients</p>
+        </ion-item>
+    </ion-list>
+
+    <button ion-button color="danger"  block (click)="dismiss()" >OK</button>
+</ion-content>

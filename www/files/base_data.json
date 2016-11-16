@@ -1,0 +1,155 @@
+{"docs" :
+    [
+        {
+            "_id": "Water",
+            "type": "INGREDIENT",
+            "recipe_ids": [],
+            "checked": false,
+            "categoryId": "Drinks",
+            "name": "Water",
+            "quantity": "4",
+            "ing_type": "Water_Drinks"
+        },
+        {
+            "_id": "Milk",
+            "type": "INGREDIENT",
+            "recipe_ids": [],
+            "checked": false,
+            "categoryId": "Drinks",
+            "name": "Milk",
+            "quantity": "1",
+            "ing_type": "Milk_Drinks"
+        },
+        {
+            "_id": "Bread",
+            "type": "INGREDIENT",
+            "recipe_ids": [],
+            "checked": false,
+            "categoryId": "Bakery",
+            "name": "Bread",
+            "quantity": "1",
+            "ing_type": "Bread_Bakery"
+        },
+        {
+            "_id": "Plain Flour",
+            "type": "INGREDIENT",
+            "recipe_ids": [],
+            "checked": false,
+            "name": "Plain Flour",
+            "categoryId": "Bakery",
+            "ing_type": "Home Baking",
+            "quantity": "1kg"
+        },
+        {
+            "_id": "Chicken",
+            "type": "INGREDIENT",
+            "recipe_ids": [],
+            "checked": false,
+            "categoryId": "Meet",
+            "name": "Chicken",
+            "quantity": "",
+            "ing_type": "Chicken_Meet"
+        },
+        {
+            "_id": "Meet",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "meat"
+        },
+        {
+            "_id": "Drinks",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Drinks"
+        },
+        {
+            "_id": "Bakery",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Bakery"
+        },
+        {
+            "_id": "Baking/Dry",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Baking/Dry"
+        },
+        {
+            "_id": "Personal Care",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Personal Care"
+        },
+        {
+            "_id": "Other",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Other"
+        },
+        {
+            "_id": "Paper Goods",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Paper Goods"
+        },
+        {
+            "_id": "Frozen Foods",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Frozen Foods"
+        },
+        {
+            "_id": "Dairy",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Dairy"
+        },
+        {
+            "_id": "Canned/Jarred Goods",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Canned/Jarred Goods"
+            },
+        {
+            "_id": "Cleaners",
+            "type": "CATEGORY",
+            "recipe_ids": [
+            ],
+            "ingredients": [
+            ],
+            "name": "Cleaners"
+        }
+
+    ]
+}
+

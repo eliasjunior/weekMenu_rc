@@ -1,0 +1,28 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Ingredient Generator</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="ingredient" >
+    <form  name="listCat" #listForm="ngForm" no-padding>
+        <ion-item-group *ngFor="let category of categories let j = index">
+
+            <ion-item-divider color="laranjado">
+                {{category.name}}
+            </ion-item-divider>
+
+            <ion-item *ngFor="let ingredient of category.ingredients let i = index"
+                      [ngClass]="{'completed-background': ingredient.verify}">
+                <ion-label>
+                    {{ingredient.name}}{{ingredient.quantity ? ', ' +ingredient.quantity: ''}}
+                </ion-label>
+                <ion-checkbox color="secondary" [(ngModel)]="ingredient.verify" name="checked-{{i}}-{{j}}"
+                              #checked="ngModel" (click)="pickIngredient(ingredient)" ></ion-checkbox>
+            </ion-item>
+        </ion-item-group>
+    </form>
+    <ion-list padding *ngIf="listLoaded">
+        <button ion-button block color="favorite" (click)="verifyRecipe()">Verify Recipes</button>
+    </ion-list>
+</ion-content>

@@ -1,0 +1,38 @@
+.ingredient {
+
+    .completed {
+        text-decoration: line-through;
+        color: gray;
+        background-color: lightgray;
+    }
+
+    .list-ingredient-title {
+        color: #797979;
+    }
+
+    .completed-background {
+        background-color: #c7ffd3;
+    }
+
+    .cat-completed {
+        background-color: #2ca633;
+        text-decoration: line-through;
+    }
+
+    .recipe-from-ingredient {
+        color: #2ca633;
+    }
+
+    .quantity-block {
+        margin-top: 25px;
+        padding-left: 15px;
+        span {
+            color: #828282;
+            font-family: inherit;
+            font-size: medium;
+            font-weight: 400
+        }
+
+    }
+
+}

@@ -1,0 +1,40 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title> Select to shopping</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content no-padding>
+    <ion-card>
+
+        <ion-card-content>
+           Pick up ingredient to show in the shopping list
+        </ion-card-content>
+
+    </ion-card>
+
+    <form  name="listForm" #listForm="ngForm">
+
+        <ion-list no-margin>
+            <ion-item>
+                <ion-label>Select all</ion-label>
+                <ion-toggle [(ngModel)]="shopping" checked="{{shopping}}"
+                            (click)="selectAll()"
+                            name="toggle-all"></ion-toggle>
+            </ion-item>
+        </ion-list>
+
+        <ion-item-group *ngFor="let category of categories; let i=index">
+
+            <ion-item-divider light>{{category.name}}</ion-item-divider>
+
+            <ion-item *ngFor="let ingredient of category.ingredients; let j=index">
+                <ion-label>{{ingredient.name}}</ion-label>
+                <ion-toggle [(ngModel)]="ingredient.shopping" checked="{{ingredient.shopping}}"
+                            (click)="updateShopping(ingredient)"
+                            name="toggle-{{i}}{{j}}"></ion-toggle>
+            </ion-item>
+        </ion-item-group>
+    </form>
+
+</ion-content>
