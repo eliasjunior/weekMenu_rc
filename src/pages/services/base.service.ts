@@ -5,8 +5,10 @@ import 'rxjs/add/observable/fromPromise';
 import {Observable} from "rxjs";
 import {Toast, ToastOptions} from "ionic-native";
 
-//let PouchDB = require('pouchdb');
 import PouchDB from 'pouchdb';
+import PouchDBFind from 'pouchdb-find';
+import PouchMemory from 'pouchdb-adapter-memory'
+import {appConstant} from "../constants/app.constant";
 
 export class BaseService {
 
@@ -17,21 +19,23 @@ export class BaseService {
     constructor() {
         //for chrome
         window["PouchDB"] = PouchDB;
+        PouchDB.plugin(PouchMemory);
+        PouchDB.plugin(PouchDBFind);
     }
 
     public initDB () {
 
-        console.log("Creating BD ")
         this._db = new PouchDB('weekmenu', {adapter: 'websql'});
+        //this._db = new PouchDB('weekmenu', {adapter: 'memory'});
+
         //PouchDB.debug.enable('*');
-       // PouchDB.debug.disable();
+        //PouchDB.debug.disable();
 
         this._db.on('error', function (err) {
-            console.log("DB ERROR",err)
-            console.log('***************** END error log');
-
-        })
-
+            console.error("DB ERROR **********")
+            console.error(err)
+            console.error('***************** END error log');
+        });
     }
 
     syncDataBase(){
@@ -43,6 +47,12 @@ export class BaseService {
         return this._db.replicate.from('http://10.157.196.224:5984/weekmenu');
     }
 
+    public getIndexes() {
+        this._db.getIndexes()
+            .then(response => {
+                console.log("result", response)
+            }).catch(reason => this.handleError('Problem to get the indexes', reason));
+    }
 
     public message(message) {
 
@@ -294,17 +304,39 @@ export class BaseService {
     public createDesignDoc(name, mapFunction) {
         var ddoc = {
             _id: '_design/' + name,
-            views: {
-            }
+            views: {}
         }
 
         ddoc.views[name] = { map: mapFunction.toString() };
         return ddoc;
     }
 
+    public createNewView() {
+        this._db.createIndex({
+            index: {
+                fields: [appConstant.CAT_INGREDIENT_INDEX, appConstant.INGREDIENT_WEEK_INDEX, appConstant.RECIPE_INDEX ],
+            }
+        }).then(response => {console.log("response new plugin", response)})
+            .catch(reason => this.handleError('index', reason));
+
+    }
+
+    public find() {
+        this._db.find({
+            selector: {name: '_design/' + appConstant.CAT_INGREDIENT_INDEX}
+        }).then(function (result) {
+            console.log("TEST PLUGIN", result);
+        }).catch(reason => this.handleError('test', reason));
+    }
+
     private createdViewLogs(doc) {
         console.log("Design view create ", doc)
     }
+
+    private handleError(message, reason) {
+        console.error(message, reason);
+    }
+
 }
 
 

@@ -33,6 +33,7 @@ export class MenuComponent{
 
             this.refreshList();
 
+
         });
     }
 
@@ -46,6 +47,25 @@ export class MenuComponent{
                 err => this.handleError("Error to get list recipe", err),
                 () => this.finalCall()
             );
+
+        //TODO ***** TEST REMOVE THIS AFTER DONE
+        this.recipeService.getViewRecipeIngredient('Random stuff')
+            .then(response => {
+                console.log("Response from view LENGTH", response.rows.length)
+
+                //ANTOHER
+                this.recipeService.find();
+
+                //**TEST PLUGIN
+               // this.recipeService.getIndexes();
+            })
+            .catch(reason => {
+                console.error("problem get view", reason)
+            })
+
+
+
+
     }
 
     selectItem(recipe: Recipe) {

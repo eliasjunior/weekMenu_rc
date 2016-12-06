@@ -3,7 +3,6 @@ import {Base} from "../model/base.model";
  * Created by eliasmj on 05/08/2016.
  */
 
-
 export class Quantity extends Base {
 
     typeQuantity: string;

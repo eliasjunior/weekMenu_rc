@@ -15,6 +15,7 @@ import {ModalSelectDays} from "./modal/modal.select.days";
 @Component({
   templateUrl: 'recipe-list-component.html'
 })
+
 export class RecipeListComponent {
 
     public recipes : Recipe [];

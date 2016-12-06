@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {IngredientService} from "../ingredient/ingredient.service";
 import {RecipeService} from "../recipe/recipe.service";
-import {appConstant} from "../constants/app.constant";
+//import {appConstant} from "../constants/app.constant";
 
 @Injectable()
 export class UtilService {
@@ -75,51 +75,51 @@ export class UtilService {
     //         }).catch(err => console.error("Err version update", err));
     // }
 
-    private createDeleteIngredientIndex() {
-
-        this.recipeService.deleteViewRecipe(appConstant.INGREDIENT_WEEK_INDEX)
-            .then(response => {
-                console.log("Delete success INGREDIENT_WEEK_INDEX", response);
-
-               // this.ingredientService.createView();
-
-            }).catch(reason => {
-                console.error("error to delete view", reason);
-                if(reason.name = "not_found") {
-                }
-            });
-    }
-
-
-    private createDeleteCatIngredientIndex() {
-
-        this.recipeService.deleteViewRecipe(appConstant.CAT_INGREDIENT_INDEX)
-            .then(response => {
-                console.log("Delete success CAT_INGREDIENT_INDEX", response);
-
-               // this.ingredientService.createView();
-
-            }).catch(reason => {
-            console.error("error to delete view", reason);
-            if(reason.name = "not_found") {
-            }
-        });
-    }
-
-    private createDeleteRecipeIndex() {
-
-        this.recipeService.deleteViewRecipe(appConstant.RECIPE_INDEX)
-            .then(response => {
-                console.log("Delete success RECIPE_INDEX", response);
-
-                //create view
-              //  this.recipeService.createView();
-
-            }).catch(reason => {
-                console.error("error to delete view", reason);
-                if(reason.name = "not_found") {
-                }
-             });
-
-    }
+    // private createDeleteIngredientIndex() {
+    //
+    //     this.recipeService.deleteViewRecipe(appConstant.INGREDIENT_WEEK_INDEX)
+    //         .then(response => {
+    //             console.log("Delete success INGREDIENT_WEEK_INDEX", response);
+    //
+    //            // this.ingredientService.createView();
+    //
+    //         }).catch(reason => {
+    //             console.error("error to delete view", reason);
+    //             if(reason.name = "not_found") {
+    //             }
+    //         });
+    // }
+    //
+    //
+    // private createDeleteCatIngredientIndex() {
+    //
+    //     this.recipeService.deleteViewRecipe(appConstant.CAT_INGREDIENT_INDEX)
+    //         .then(response => {
+    //             console.log("Delete success CAT_INGREDIENT_INDEX", response);
+    //
+    //            // this.ingredientService.createView();
+    //
+    //         }).catch(reason => {
+    //         console.error("error to delete view", reason);
+    //         if(reason.name = "not_found") {
+    //         }
+    //     });
+    // }
+    //
+    // private createDeleteRecipeIndex() {
+    //
+    //     this.recipeService.deleteViewRecipe(appConstant.RECIPE_INDEX)
+    //         .then(response => {
+    //             console.log("Delete success RECIPE_INDEX", response);
+    //
+    //             //create view
+    //           //  this.recipeService.createView();
+    //
+    //         }).catch(reason => {
+    //             console.error("error to delete view", reason);
+    //             if(reason.name = "not_found") {
+    //             }
+    //          });
+    //
+    // }
 }

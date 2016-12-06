@@ -68,12 +68,12 @@ export class RecipeService extends BaseService
         return recipes;
     }
 
-
     getViewRecipeIngredient(value: string) {
         //console.log("INDEX KEY", value)
 
         if(value) {
             return this._db.query(appConstant.RECIPE_INDEX, {include_docs : true, key :  value});
+
         } else {
             return this._db.query(appConstant.RECIPE_INDEX, {include_docs : true});
         }
