@@ -4,6 +4,7 @@ import {Injectable} from "@angular/core";
 import {BaseService} from "../services/base.service";
 import {appConstant} from "../constants/app.constant";
 import {Recipe} from "../recipe/recipe.model";
+import {IngredientApiService} from "./ingredient.api.service";
 
 /**
  * Created by eliasmj on 08/08/2016.
@@ -13,90 +14,116 @@ import {Recipe} from "../recipe/recipe.model";
 export class IngredientService extends BaseService
 {
 
-
-    createView() {
-        this.createViewRecipeWeekIngredient();
-        //to add the index its O(n), Its runs N docs per DB, during the insertion couchDB add the index to a b-tree, and then running in log(n)
-        this.createViewCatIngredient();
+    constructor(public ingredientApiService: IngredientApiService){
+        super()
     }
 
     getCategories() {
-        return super.getAll("CATEGORY");
+
+        return this.ingredientApiService
+            .getCatgories()
+            .map(this.convertDocsToCategoriesOnly)
+            .catch(this.errorHandler)
     }
 
     getCategoriesIngredient(value :string) {
 
-        let options : any = {include_docs : true};
+        return this.ingredientApiService.getListDocs()
+            .map(this.convertDocsToCategories)
+            .catch(this.errorHandler)
 
-        if(value !== null) {
-            options.key = value;
-            console.log("Search key cat", value)
-        }
+    }
 
-        return this._db.query(appConstant.CAT_INGREDIENT_INDEX, options)
-            .then(response => {
-                console.log("getCategoriesIngredient view", response)
-                return Promise.resolve(this.populateCategory(response.rows))
-            })
-            .catch(reason => {
-                console.error("Error getting view getCategoriesIngredient", reason);
-                return Promise.reject(reason);
-            });
+    public getIngredient(id: String) {
+        return this.ingredientApiService
+            .getIngredient(id)
+            .map(this.parseIngredient)
+            .catch(this.errorHandler)
+    }
+
+    private convertDocsToCategories(docs: any) : Category[]{
+
+        let categories : Category [] = [];
+        //need to get the week's menu separated
+        docs.forEach(doc => {
+
+            categories.push(this.parseCategory(doc))
+
+        });
+
+        return categories;
+    }
+
+    private convertDocsToCategoriesOnly(docs: any) : Category[]{
+
+        console.log("docs", docs)
+
+        let categories : Category [] = [];
+        //need to get the week's menu separated
+        docs.forEach(doc => {
+
+            let category = new Category();
+            category.parseCategory(doc);
+            categories.push(category);
+        });
+
+        return categories;
     }
 
     getViewRecipeWeekIngredient (value: string) : Promise<Category[]>{
         //console.log("INGREDIENT_WEEK_INDEX", value)
 
-        let categories : Category [] = [];
-        let recipes : Recipe[] = [];
-
-        return this._db.query(appConstant.INGREDIENT_WEEK_INDEX, {include_docs : true})
-            .then(viewQuery => {
-
-                console.log("****** VIEW QUERY * ", viewQuery)
-
-                //remove null, they are deleted, for some reason its coming
-                let rows = viewQuery.rows.filter(row => row.doc !== undefined)
-
-                //console.log("VIEW QUERY * ", rows)
-
-                //need to get the week's menu separated
-                rows.forEach(row => {
-
-                    if(row.doc.type === appConstant.RECIPE_TYPE) {
-
-                        let recipe = new Recipe();
-                        recipe.parseRecipe(row.doc);
-
-                        recipes.push(recipe);
-                    }
-                });
-
-                rows.forEach(row => {
-
-                    if(row.doc.type === appConstant.CATEGORY_TYPE) {
-
-                        let currentRecipeKey = row.key;
-
-                        //check if it's in menu week
-                        if(recipes.find(recipe => recipe._id === currentRecipeKey)) {
-                            //this create the category and add the ingredients on it.
-                            categories =
-                                this.addRowToCategories(
-                                    this.parseCategory(row),
-                                    this.parseIngredient(row),
-                                    categories, currentRecipeKey);
-
-                        }
-                    }
-
-                });
-
-                return Promise.resolve(categories);
-            })
-            .catch(reason => {
-                return Promise.reject(reason);
-            });
+        return null
+        // let categories : Category [] = [];
+        // let recipes : Recipe[] = [];
+        //
+        // return this._db.query(appConstant.INGREDIENT_WEEK_INDEX, {include_docs : true})
+        //     .then(viewQuery => {
+        //
+        //         console.log("****** VIEW QUERY * ", viewQuery)
+        //
+        //         //remove null, they are deleted, for some reason its coming
+        //         let rows = viewQuery.rows.filter(row => row.doc !== undefined)
+        //
+        //         //console.log("VIEW QUERY * ", rows)
+        //
+        //         //need to get the week's menu separated
+        //         rows.forEach(row => {
+        //
+        //             if(row.doc.type === appConstant.RECIPE_TYPE) {
+        //
+        //                 let recipe = new Recipe();
+        //                 recipe.parseRecipe(row.doc);
+        //
+        //                 recipes.push(recipe);
+        //             }
+        //         });
+        //
+        //         rows.forEach(row => {
+        //
+        //             if(row.doc.type === appConstant.CATEGORY_TYPE) {
+        //
+        //                 let currentRecipeKey = row.key;
+        //
+        //                 //check if it's in menu week
+        //                 if(recipes.find(recipe => recipe._id === currentRecipeKey)) {
+        //                     //this create the category and add the ingredients on it.
+        //                     categories =
+        //                         this.addRowToCategories(
+        //                             this.parseCategory(row),
+        //                             this.parseIngredient(row),
+        //                             categories, currentRecipeKey);
+        //
+        //                 }
+        //             }
+        //
+        //         });
+        //
+        //         return Promise.resolve(categories);
+        //     })
+        //     .catch(reason => {
+        //         return Promise.reject(reason);
+        //     });
     }
 
     public addRowToCategories(category: Category, ingredient: Ingredient,
@@ -111,21 +138,6 @@ export class IngredientService extends BaseService
 
             categories[catIndex]['ingredients'].push(ingredient);
 
-            // //check if the ingredient is already in the list, if so NEED to sum the quantity
-            // let ingIndex = categories[catIndex]['ingredients'].findIndex(ing => ing._id === ingredient._id);
-            //
-            // //not repeat ingredient in the cat
-            // if(ingIndex === -1) {
-            //     //add ingredient to the category, same category
-            //     categories[catIndex]['ingredients'].push(ingredient);
-            // } else {
-            //     //sum the quantity
-            //     let ingredientIn = categories[catIndex]['ingredients'][ingIndex];
-            //
-            //     //in case repeats the recipe
-            //     ingredientIn.setSumQuantity(currentRecipeKey)
-            // }
-
         } else {
             //NEW CAT
             ingredient.setLabelQuantity(currentRecipeKey);
@@ -134,17 +146,6 @@ export class IngredientService extends BaseService
         }
 
         return categories;
-    }
-
-    public convertIdIngredientTocategories(ids: string) {
-
-
-       // let categories : Category [] = [];
-
-          //TODO
-         //TODO
-        //TODO create view to get ingredient by id and category
-
     }
 
     insertCategory(category: Category) {
@@ -179,27 +180,20 @@ export class IngredientService extends BaseService
         return super.update(ingredient);
     }
 
-    //could be useful, dont delete right now
-    linkRecipeToIngList(recipeId : string, ingredients: Ingredient[]) {
+    private parseCategory(doc) : Category {
 
-        ingredients.forEach(ingredient => {
+        if(doc) {
+            let category = new Category();
+            category.parseCategory(doc);
 
-            if(!ingredient.recipe_ids) {
-                ingredient.recipe_ids = [];
+            if(doc.ingredients && doc.ingredients.length > 0) {
+                doc.forEach(ing => {
+                    let ingredient = this.parseIngredient(ing);
+
+                    category.ingredients.push(ingredient);
+                });
             }
 
-            ingredient.recipe_ids.push(recipeId);
-        });
-
-        return super.updateMany(ingredients);
-    }
-
-
-    public parseCategory(row) : Category {
-
-        if(row.doc) {
-            let category = new Category();
-            category.parseCategory(row.doc);
             return category;
 
         } else {
@@ -209,10 +203,10 @@ export class IngredientService extends BaseService
 
     }
 
-    public parseIngredient(row) : Ingredient{
+    private parseIngredient(doc) : Ingredient{
 
         let ingredient = new Ingredient();
-        ingredient.parseIngredient(row.value.ingredient);
+        ingredient.parseIngredient(doc);
 
         return ingredient;
     }
@@ -224,7 +218,7 @@ export class IngredientService extends BaseService
             return;
         }
 
-        if(ingredient.checked) {
+        if(ingredient.checkedInCartShopping) {
 
             ingredient.recipe_ids.push(recipeId);
 
@@ -239,59 +233,6 @@ export class IngredientService extends BaseService
         }
 
         return super.update(ingredient);
-    }
-
-
-    private createViewRecipeWeekIngredient() {
-
-        //gambiarra watch typescript
-        function emit(p,w){};
-        let log;
-        //**
-
-        var mapFunc = function mapFun(doc) {
-
-            log("**************************")
-            log(doc)
-            log("*************************END")
-
-             if(doc.type === "INGREDIENT" && doc.shopping)
-            {
-                //log(doc.name +", doc.recipe_ids >>>>>>>" + doc.recipe_ids)
-                for(var idx in doc.recipe_ids) {
-
-                    emit(doc.recipe_ids[idx], {_id : doc.categoryId, ingredient: doc});
-
-                }
-            } else if(doc.type === "RECIPE" && doc.checked){
-                    //log("RECIPES name >>>>>>>" + doc.name)
-                    emit(doc._id, null);
-            }
-
-        }
-        // save the design doc
-        super.updateIndex(super.createDesignDoc(appConstant.INGREDIENT_WEEK_INDEX, mapFunc));
-    }
-
-    private createViewCatIngredient() {
-
-        //gambiarra watch typescript
-        function emit(p,w){};
-        let log;
-        //**
-
-        var mapFunc = function mapFun(doc) {
-
-            // join category data to ingredients
-            if (doc.type === 'INGREDIENT' && !doc.deleted) {
-
-                log("****** ingredient " +doc.name )
-                emit(doc.categoryId, {_id : doc.categoryId, ing_type: doc.ing_type, ingredient : doc});
-            }
-
-        }
-        // save the design doc
-        super.updateIndex(super.createDesignDoc(appConstant.CAT_INGREDIENT_INDEX, mapFunc));
     }
 
     private populateCategory(rows) {

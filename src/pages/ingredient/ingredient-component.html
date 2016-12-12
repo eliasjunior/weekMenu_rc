@@ -13,7 +13,7 @@
                 </ion-label>
                 <ion-select [(ngModel)]="ingredient.categoryId" required name="category" #category="ngModel"
                             (ngModelChange)="onChangeCat()">
-                    <ion-option *ngFor="let category of listCategory" [value]="category._id">
+                    <ion-option *ngFor="let category of categories" [value]="category._id">
                         {{category.name}}
                     </ion-option>
                     <ion-option [value]="'addNew'">ADD NEW</ion-option>

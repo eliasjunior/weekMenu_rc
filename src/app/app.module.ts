@@ -17,6 +17,8 @@ import {IngredientGeneratorComponent} from "../pages/ingredient/ingredient.gener
 import {ModalConfirmation} from "../pages/ingredient/modal/modal.confirmation";
 import {ModalRecipes} from "../pages/ingredient/modal/modal.recipes";
 import {ModalSelectDays} from "../pages/recipe/modal/modal.select.days";
+import {RecipeApiService} from "../pages/recipe/recipe.api.service";
+import {IngredientApiService} from "../pages/ingredient/ingredient.api.service";
 
 @NgModule({
     declarations: [
@@ -55,6 +57,6 @@ import {ModalSelectDays} from "../pages/recipe/modal/modal.select.days";
         ModalSelectDays,
         TabsPage
     ],
-    providers: [RecipeService,  IngredientService, UtilService]
+    providers: [RecipeService,  IngredientService, UtilService, RecipeApiService, IngredientApiService]
 })
 export class AppModule {}

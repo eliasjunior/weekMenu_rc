@@ -24,7 +24,6 @@ export class MenuComponent{
                 private platform: Platform,
                 private zone: NgZone) {
         this.mainMeals = this.recipeService.getMainMealList();
-
     }
 
     ionViewDidEnter() {
@@ -32,8 +31,6 @@ export class MenuComponent{
         this.platform.ready().then(() => {
 
             this.refreshList();
-
-
         });
     }
 
@@ -41,31 +38,12 @@ export class MenuComponent{
 
         this.recipes = [];
 
-        this.recipeService.getListMenu()
+        this.recipeService.getList()
             .subscribe(
                 recipesA => this.populateList(recipesA),
                 err => this.handleError("Error to get list recipe", err),
                 () => this.finalCall()
             );
-
-        //TODO ***** TEST REMOVE THIS AFTER DONE
-        this.recipeService.getViewRecipeIngredient('Random stuff')
-            .then(response => {
-                console.log("Response from view LENGTH", response.rows.length)
-
-                //ANTOHER
-                this.recipeService.find();
-
-                //**TEST PLUGIN
-               // this.recipeService.getIndexes();
-            })
-            .catch(reason => {
-                console.error("problem get view", reason)
-            })
-
-
-
-
     }
 
     selectItem(recipe: Recipe) {
@@ -91,6 +69,8 @@ export class MenuComponent{
 
     private populateList(recipesA: any) {
 
+        recipesA = recipesA.filter((recipe) => recipe.isInMenuWeek === true);
+
         this.zone.run(() => {
 
             this.recipes = recipesA as Recipe [];
@@ -112,8 +92,11 @@ export class MenuComponent{
             });
 
             //get the mainMeal details, because in recipe has only the key
+
             this.recipes.forEach(recipe => {
-                recipe.populateMainMeail(this.mainMeals);
+                if(recipe.mainMealValue) {
+                    recipe.populateMainMeal(this.mainMeals);
+                }
             });
 
         });

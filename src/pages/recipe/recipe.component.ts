@@ -10,6 +10,8 @@ import {RecipeListComponent} from "./recipe.list.component";
 import {IngredientService} from "../ingredient/ingredient.service";
 import {IngredientListComponent} from "../ingredient/Ingredient.list.component";
 import {Category} from "../ingredient/category.model";
+import {Response} from "@angular/http";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'recipe-component',
@@ -38,6 +40,8 @@ export class RecipeComponent {
             this.recipe = new Recipe();
         }
 
+        console.log("RECIPE ", this.recipe)
+
         this.mainMeals = recipeService.getMainMealList();
      }
 
@@ -54,33 +58,17 @@ export class RecipeComponent {
 
     private refreshListIngredients() {
 
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
-        });
-        loader.present();
+        // let loader = this.loadingCtrl.create({
+        //     content: "Please wait..."
+        // });
+        // loader.present();
+        //
+        // this.recipeService.getRecipe(this.recipe._id)
+        //     .subscribe(recipe => {
+        //
+        //     }, err => console.error(err)
+        //     , () => this.displayList(loader))
 
-        this.recipeService.getViewRecipeIngredient(this.recipe._id)
-            .then(response =>
-            {
-                console.log("getViewRecipeIngredient VIEW", response);
-                this.displayList(loader);
-                response.rows.forEach(row => {
-                    //ideally the query not return row.doc unefined
-                    if(row.doc) {
-                        this.ingredientService
-                            .addRowToCategories(this.ingredientService.parseCategory(row),
-                                this.ingredientService.parseIngredient(row),
-                                this.categories);
-                    } else {
-                        console.warn("Row.doc undefined", row)
-                    }
-
-                });
-            })
-            .catch(reason => {
-                this.displayList(loader);
-                console.error("Error view", reason)
-            });
     }
 
     private displayList(loader) {
@@ -94,18 +82,7 @@ export class RecipeComponent {
             this.recipeService.message('Tap Save before add ingredients')
         } else {
 
-            this.ingredientService.getCategories()
-                .subscribe(cats => {
-
-                    // console.log("GET CAT", cats)
-                    // console.log("cats['length']", cats['length']);
-
-                    if(cats['length'] > 0) {
-                        this.navCtrl.push(IngredientListComponent, {recipeId : recipeId});
-                    } else {
-                        this.navCtrl.push(IngredientComponent, {recipeId : recipeId});
-                    }
-                });
+            this.navCtrl.push(IngredientListComponent, {recipeId : recipeId});
         }
 
     }
@@ -116,25 +93,23 @@ export class RecipeComponent {
 
     saveRecipe(){
 
-        this.recipe.checked = true;
+        this.recipe.isInMenuWeek = true;
 
         this.recipeService.saveRecipe(this.recipe)
-            .then(response =>
+            .subscribe(response =>
             {
                 console.log("Save or update!!", response);
 
                 this.recipeService.message('Recipe saved successfully!');
-            })
-            .catch(reason => console.log("Error", reason));
 
+                if(this.categories.length > 0) {
+                    this.navCtrl.push(RecipeListComponent);
+                } else {
+                    this.recipeService.message('Should save at least one ingredient');
+                    // console.log("Should save at least one ingredient")
+                }
 
-        if(this.categories.length > 0) {
-            this.navCtrl.push(RecipeListComponent);
-        } else {
-            this.recipeService.message('Should save at least one ingredient');
-           // console.log("Should save at least one ingredient")
-        }
+            }, err => console.error("Error to get post recipe"))
 
     }
-
 }

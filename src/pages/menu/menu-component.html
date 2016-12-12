@@ -12,11 +12,15 @@
     <ion-list >
         <ion-item *ngFor="let recipe of recipes" (click)="selectItem(recipe)">
 
-            <ion-avatar item-left>
+            <ion-avatar item-left *ngIf="recipe.mainMeal">
                 <img src="assets/images/{{recipe.mainMeal.mealDetail.icon}}">
             </ion-avatar>
-            <h2>{{recipe.name}}<span style="color: #2ca633"
-                                     *ngIf="recipe.mainMealValue === 'side'"> * {{recipe.mainMealValue}}</span></h2>
+            <h2>
+                {{recipe.name}}
+                <span style="color: #2ca633" *ngIf="recipe.mainMealValue === 'side'">
+                    * {{recipe.mainMealValue}}
+                </span>
+            </h2>
             <p>{{recipe.weekDay}}</p>
         </ion-item>
     </ion-list>

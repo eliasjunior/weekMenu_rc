@@ -25,7 +25,7 @@ export class IngredientComponent
 
     showNewCat: Boolean = false ;
 
-    listCategory : Category [];
+    categories : Category [];
 
     recipeId: string;
 
@@ -50,44 +50,37 @@ export class IngredientComponent
         let ingredientId = this.navParams.get('ingredientId');
 
         if (ingredientId) {
-            this.ingredientService.get(ingredientId)
-                .then(ingredientResp => {
 
-                    this.ingredient.parseIngredient(ingredientResp);
+            this.ingredientService
+                .getIngredient(ingredientId)
+                .subscribe(ing => {
+                    this.ingredient = ing;
 
-                    //get the qtd from the recipe
-                    this.quantity = this.ingredient.quantities
-                        .find(quantityIN => quantityIN.recipeId === this.recipeId);
+                    //TODO
+                    //         this.quantity = this.ingredient.quantities
+                    //             .find(quantityIN => quantityIN.recipeId === this.recipeId);
+                    //
+                    //         if(!this.quantity) {
+                    //             this.createQuantity();
+                    //         }
+                    //
+                    //         this.populateCategory(this.ingredient.categoryId)
 
-                    if(!this.quantity) {
-                        this.createQuantity();
-                    }
-
-                    this.populateCategory(this.ingredient.categoryId)
-
-                }).catch(err => console.error(err));
+                }, this.handleError)
 
         } else {
-            this.createQuantity()
+            this.createQuantity();
         }
     }
 
     ionViewDidEnter() {
 
-        this.listCategory = [];
+        this.categories = [];
 
         //for the select list.
         this.ingredientService.getCategories()
-            .subscribe(catListResp => {
-
-                    let fakeCheckTypeArray = catListResp as Category[];
-
-                    fakeCheckTypeArray.forEach(cat => {
-                        let category = new Category();
-                        category.parseCategory(cat);
-
-                        this.listCategory.push(category)
-                    });
+            .subscribe(cats => {
+                    this.categories = cats;
                 },
                 err => console.error("Error to get list recipe")
             );
@@ -137,14 +130,14 @@ export class IngredientComponent
     }
 
     deleteIngredient() {
-        this.ingredientService._delete(this.ingredient)
-            .then(response =>
-            {
-                this.ingredient = new Ingredient();
-                this.currentCategory = new Category();
-                console.log("deleted!", response)
-            })
-            .catch(err => console.error("Error deleting", err));
+        // this.ingredientService._delete(this.ingredient)
+        //     .then(response =>
+        //     {
+        //         this.ingredient = new Ingredient();
+        //         this.currentCategory = new Category();
+        //         console.log("deleted!", response)
+        //     })
+        //     .catch(err => console.error("Error deleting", err));
     }
 
     //Ingredient 1 x N cat
@@ -163,15 +156,15 @@ export class IngredientComponent
 
         if(this.ingredient.categoryId !== 'addNew') {
 
-            this.ingredientService.updateCategory(this.currentCategory)
-                .then(response => this.updateCategorySuccess(response))
-                .catch(reason => this.handleError("updateCategory error", reason));
+            // this.ingredientService.updateCategory(this.currentCategory)
+            //     .then(response => this.updateCategorySuccess(response))
+            //     .catch(reason => this.handleError("updateCategory error", reason));
 
         } else {
 
-            this.ingredientService.insertCategory(this.currentCategory)
-                .then(response => this.insertCatSuccess(response))
-                .catch(reason => this.handleError("insertCategory error", reason));
+            // this.ingredientService.insertCategory(this.currentCategory)
+            //     .then(response => this.insertCatSuccess(response))
+            //     .catch(reason => this.handleError("insertCategory error", reason));
         }
 
     }
@@ -248,7 +241,7 @@ export class IngredientComponent
         } else {
             //TODO add validation save
 
-            this.currentCategory._rev = response.rev
+            this.currentCategory._rev = response.rev;
 
             this.insertIngredient();
         }
@@ -273,10 +266,10 @@ export class IngredientComponent
         //this.navCtrl.push(IngredientListComponent, {recipeId: this.recipeId});
     }
 
-    private handleError(message, reason) {
+    private handleError(reason) {
 
-        console.error(message, reason);
-        this.ingredientService.messageError(message);
+        console.error(reason);
+        this.ingredientService.messageError(reason);
     }
 
     private createQuantity(){
@@ -288,21 +281,21 @@ export class IngredientComponent
 
         this.setRecipe();
 
-        this.ingredientService.insertIngredient(this.ingredient, this.currentCategory)
-            .then(response => this.successSaveIng(response))
-            .catch(reason => this.handleError("insertIngredient error", reason));
+        // this.ingredientService.insertIngredient(this.ingredient, this.currentCategory)
+        //     .then(response => this.successSaveIng(response))
+        //     .catch(reason => this.handleError("insertIngredient error", reason));
     }
 
     private updateIngredient() {
 
-        this.ingredientService.updateIngredient(this.ingredient)
-            .then(response => this.successSaveIng(response))
-            .catch(reason => this.handleError("updateIngredient error", reason));
+        // this.ingredientService.updateIngredient(this.ingredient)
+        //     .then(response => this.successSaveIng(response))
+        //     .catch(reason => this.handleError("updateIngredient error", reason));
     }
 
     private populateCategory(categoryId) {
-        this.ingredientService.get(categoryId)
-            .then(categoryResp =>  this.currentCategory.parseCategory(categoryResp))
-            .catch(reason => this.handleError("get error", reason));
+        // this.ingredientService.get(categoryId)
+        //     .then(categoryResp =>  this.currentCategory.parseCategory(categoryResp))
+        //     .catch(reason => this.handleError("get error", reason));
     }
 }

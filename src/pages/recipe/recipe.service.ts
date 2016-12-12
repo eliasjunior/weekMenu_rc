@@ -4,117 +4,36 @@
 import {Recipe} from "./recipe.model";
 import {MainMeal, MealDetail} from "./main.meal.model";
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/fromPromise';
 import {BaseService} from "../services/base.service";
-import {Ingredient} from "../ingredient/ingredient.model";
-import {appConstant} from "../constants/app.constant";
-import {Base} from "../model/base.model";
-import {Http} from "@angular/http";
-
+import {RecipeApiService} from "./recipe.api.service";
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class RecipeService extends BaseService
 {
-    private recipes;
+    private recipes: Recipe [];
 
-    constructor(private http: Http) {
+    constructor(private recipeApiService : RecipeApiService) {
         super();
     }
 
-    createView() {
-        this.createViewRecipeIngredient();
+    getRecipe(id: String) {
+        return this.recipeApiService.get(id)
+            .map(this.convertDocToRecipes)
+            .catch(this.errorHandler)
     }
 
-    private createViewRecipeIngredient() {
-        //gambiarra watch typescript
-        function emit(p,w){};
-        //let log;
-
-        var mapFunc = function mapFun(doc) {
-
-            if(doc.type === "INGREDIENT" && !doc.deleted)
-            {
-                //log("doc.ingredient_ids >>>>>>>" + doc.recipe_ids)
-                for(var idx in doc.recipe_ids) {
-                    //log("idx=" + doc.recipe_ids[idx])
-                    //emit(doc.recipe_ids[idx], null);
-                    emit(doc.recipe_ids[idx], {_id : doc.categoryId, ingredient: doc});
-                    //the param key will match the emit key
-                }
-            }
-        }
-        // save the design doc
-        super.updateIndex(super.createDesignDoc(appConstant.RECIPE_INDEX, mapFunc));
-    }
-
-    convertRowsToRecipes(rows) {
-
-        let recipes : Recipe [];
-        //need to get the week's menu separated
-        rows.forEach(row => {
-
-            if(row.doc.type === appConstant.RECIPE_TYPE) {
-
-                let recipe = new Recipe();
-                recipe.parseRecipe(row.doc);
-
-                recipes.push(recipe);
-            }
-        });
-
-        return recipes;
-    }
-
-    getViewRecipeIngredient(value: string) {
-        //console.log("INDEX KEY", value)
-
-        if(value) {
-            return this._db.query(appConstant.RECIPE_INDEX, {include_docs : true, key :  value});
-
-        } else {
-            return this._db.query(appConstant.RECIPE_INDEX, {include_docs : true});
-        }
-    }
-
-    // private recipes : Recipe[];
     getList() {
 
-        if(!this.recipes) {
-
-            return super.getAll('RECIPE');
-
-        } else {
-            return Observable.create(observer => {
-                observer.next(this.recipes);
-                observer.complete();
-            });
-        }
+        return this.recipeApiService.geRecipeDocs()
+            .map(this.convertDocsToRecipes)
+            .catch(this.errorHandler)
     }
 
-    getListMenu() {
-        return Observable.fromPromise(this._db.allDocs({ include_docs: true})
-            .then(docs => {
 
-                let recipesMenu : Recipe [] = docs.rows.map(row => {
-                    //Dates are not automatically converted from a string.
-                    //row.doc.Date = new Date(row.doc.Date);
-
-                    if(row.doc.type === "RECIPE" && row.doc.checked) {
-
-                        let rec = new Recipe();
-                        rec.parseRecipe(row.doc);
-                        return rec;
-                    }
-                }).filter(doc => doc !== undefined);
-
-               // console.log("menu lis =", recipesMenu);
-
-                return recipesMenu;
-            }));
-    }
 
     public getMainMealList() {
         return [
@@ -130,69 +49,30 @@ export class RecipeService extends BaseService
     }
 
     saveRecipe(recipe: Recipe){
-        //this.recipes.push(recipe);
-
-        //add date to the recipes
-        recipe.menus = [];
-
-        if(recipe._rev) {
-
-            return super.update(recipe)
-
-        } else {
-
-            recipe._id = recipe.name;
-
-            return super.add(recipe)
-        }
+        return this.recipeApiService.saveRecipe(recipe)
     }
 
-    linkIngredientToRecipe(recipeId : string, ingredients: Ingredient[]) {
+    private convertDocsToRecipes(docs: any) : Recipe[]{
 
-        let ingredient_ids = ingredients.map(ingredient => ingredient._id);
+        let recipes : Recipe [] = [];
+        //need to get the week's menu separated
+        docs.forEach(doc => {
 
-        return super.addArray(recipeId, 'ingredient_ids' ,ingredient_ids);
+            let recipe = new Recipe();
+            recipe.parseRecipe(doc);
+
+            recipes.push(recipe);
+        });
+
+        return recipes;
     }
 
-    getJsonFile() {
+    private convertDocToRecipes(doc: any) : Recipe{
 
-        this.http.get('files/base_data.json')
-            .toPromise()
-            .then(response => {
-                console.log("FILE IS HERE", response.json())
+        let recipe = new Recipe();
+        recipe.parseRecipe(doc);
 
-                super.updateMany(response.json())
-
-            }).catch(err => console.error("Could LOAD JSON", err))
-
-    }
-
-    public deleteViewRecipe(index) {
-
-        return super.get('_design/'+index)
-            .then(resp => {
-
-                let model = resp as Base;
-
-                let obj = {
-                    _id : model._id,
-                    _rev : model._rev
-                }
-
-                if(obj._id) {
-
-                    return super._delete(obj);
-
-
-                } else {
-                    return Promise.reject("Error to retrieve to delete");
-                }
-
-
-            }).catch(err => {
-                Promise.reject(err);
-            });
-
+        return recipe;
     }
 
     //TODO need to test and call

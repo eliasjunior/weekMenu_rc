@@ -67,13 +67,13 @@ export class IngredientListComponent
 
                     //console.log("recipe_ids", ingredient.recipe_ids)
                     if(ingredient.recipe_ids && ingredient.recipe_ids.find(id => id === this.recipeId)) {
-                        ingredient.checked = true;
+                        ingredient.checkedInCartShopping = true;
                     } else {
-                        ingredient.checked = false;
+                        ingredient.checkedInCartShopping = false;
                     }
 
                 } else {
-                    ingredient.checked = false;
+                    ingredient.checkedInCartShopping = false;
                 }
                // console.log(">>>>>", ingredient._id)
             });
@@ -94,13 +94,13 @@ export class IngredientListComponent
 
     saveCheckedIng(ingredient : Ingredient) {
 
-        //bug ionic or angular, checked ngmodel takes a few time to update
+        //bug ionic or angular, isInMenuWeek ngmodel takes a few time to update
         setTimeout(() => {
-            this.ingredientService.linkRecipeToIng(this.recipeId, ingredient)
-                .then(response => {
-                    console.log("Recipes Ing saved!", response)
-                })
-                .catch(reason => this.handleError("error to add recipe_ing", reason));
+            // this.ingredientService.linkRecipeToIng(this.recipeId, ingredient)
+            //     .then(response => {
+            //         console.log("Recipes Ing saved!", response)
+            //     })
+            //     .catch(reason => this.handleError("error to add recipe_ing", reason));
         }, 0);
 
     }
@@ -125,9 +125,9 @@ export class IngredientListComponent
 
             if(result === 'yes') {
                 //*** I need to get before delete category
-                this.ingredientService.getCategoriesIngredient(cat._id)
-                    .then(response => this.successGetCatIngredient(response, cat))
-                    .catch(reason => this.handleError("getCategoriesIngredient",reason));
+                // this.ingredientService.getCategoriesIngredient(cat._id)
+                //     .then(response => this.successGetCatIngredient(response, cat))
+                //     .catch(reason => this.handleError("getCategoriesIngredient",reason));
             }
         });
 
@@ -173,9 +173,9 @@ export class IngredientListComponent
         console.log("Cat Deleted!", response);
 
         //delete all ingredient from this category
-        this.ingredientService._deleteMany(ingredients)
-            .then(response => this.successsDeletedCat("Category and ingredients deleted!"))
-            .catch(reason => this.handleError("Problem to delete ingredients", reason));
+        // this.ingredientService._deleteMany(ingredients)
+        //     .then(response => this.successsDeletedCat("Category and ingredients deleted!"))
+        //     .catch(reason => this.handleError("Problem to delete ingredients", reason));
     }
 
     private handleError(message, reason) {
@@ -195,41 +195,47 @@ export class IngredientListComponent
 
         console.log("ING PER CAT", ingredients);
 
-        this.ingredientService._delete(cat)
-            .then(response => this.successDeletePartialCat(response, ingredients))
-            .catch(reason => this.handleError("successDeletePartialCat",reason));
+        // this.ingredientService._delete(cat)
+        //     .then(response => this.successDeletePartialCat(response, ingredients))
+        //     .catch(reason => this.handleError("successDeletePartialCat",reason));
     }
 
 
     private getCategories(loader : any) {
 
         this.ingredientService.getCategoriesIngredient(null)
-            .then(response =>
-            {
-                console.log("categories response", response)
+            .subscribe(cats => {
+                this.categories = cats;
+            }, err => console.error(err)
+             , () =>   loader.dismiss());
 
-                this.categories = response;
-
-                //search
-                this.categoriaTemp = this.categories;
-
-                this.setChecks(loader);
-            })
-            .catch(reason => {
-                console.error("Error getCategoriesIngredient", reason);
-                loader.dismiss();
-            });
+        // this.ingredientService.getCategoriesIngredient(null)
+        //     .then(response =>
+        //     {
+        //         console.log("categories response", response)
+        //
+        //         this.categories = response;
+        //
+        //         //search
+        //         this.categoriaTemp = this.categories;
+        //
+        //         this.setChecks(loader);
+        //     })
+        //     .catch(reason => {
+        //         console.error("Error getCategoriesIngredient", reason);
+        //         loader.dismiss();
+        //     });
     }
 
     private getRecipe() {
 
         if(this.recipeId) {
-            this.ingredientService.get(this.recipeId)
-                .then(recipe => {
-                    this.recipe = new Recipe();
-                    this.recipe.parseRecipe(recipe);
-                })
-                .catch(reason => this.handleError("error get", reason));
+            // this.ingredientService.get(this.recipeId)
+            //     .then(recipe => {
+            //         this.recipe = new Recipe();
+            //         this.recipe.parseRecipe(recipe);
+            //     })
+            //     .catch(reason => this.handleError("error get", reason));
         }
     }
 }

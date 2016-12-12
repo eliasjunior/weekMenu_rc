@@ -38,28 +38,28 @@ export class RecipeIngredientShoppingComponent {
         });
         loader.present();
 
-        this.recipeService.getViewRecipeIngredient(this.recipe._id)
-            .then(response =>
-            {
-                console.log("getViewRecipeIngredient VIEW", response);
-                this.displayList(loader);
-                response.rows.forEach(row => {
-                    //ideally the query not return row.doc unefined
-                    if(row.doc) {
-                        this.ingredientService
-                            .addRowToCategories(this.ingredientService.parseCategory(row),
-                                this.ingredientService.parseIngredient(row),
-                                this.categories);
-                    } else {
-                        console.warn("Row.doc undefined", row)
-                    }
-
-                });
-            })
-            .catch(reason => {
-                this.displayList(loader);
-                console.error("Error view", reason)
-            });
+        // this.recipeService.getViewRecipeIngredient(this.recipe._id)
+        //     .then(response =>
+        //     {
+        //         console.log("getViewRecipeIngredient VIEW", response);
+        //         this.displayList(loader);
+        //         response.rows.forEach(row => {
+        //             //ideally the query not return row.doc unefined
+        //             if(row.doc) {
+        //                 this.ingredientService
+        //                     .addRowToCategories(this.ingredientService.parseCategory(row),
+        //                         this.ingredientService.parseIngredient(row),
+        //                         this.categories);
+        //             } else {
+        //                 console.warn("Row.doc undefined", row)
+        //             }
+        //
+        //         });
+        //     })
+        //     .catch(reason => {
+        //         this.displayList(loader);
+        //         console.error("Error view", reason)
+        //     });
     }
 
     private displayList(loader) {
@@ -68,28 +68,28 @@ export class RecipeIngredientShoppingComponent {
 
     updateShopping(ingredient) {
 
-        if(ingredient.shopping) {
-            ingredient.checked = false;
+        if(ingredient.itemSelectedForShopping) {
+            ingredient.isInMenuWeek = false;
         }
 
-        this.ingredientService.update(ingredient)
-            .then(response => console.log("Recipe Updated", response))
-            .catch(reason => console.error(reason));
+        // this.ingredientService.update(ingredient)
+        //     .then(response => console.log("Recipe Updated", response))
+        //     .catch(reason => console.error(reason));
     }
 
     selectAll() {
 
         this.categories.forEach(cat => {
             cat.ingredients.forEach(ing => {
-                ing.shopping = this.shopping;
+                ing.itemSelectedForShopping = this.shopping;
 
-                if(ing.shopping) {
-                    ing.checked = false;
+                if(ing.itemSelectedForShopping) {
+                    ing.checkedInCartShopping = false;
                 }
 
             });
 
-           this.ingredientService.updateMany(cat.ingredients);
+          // this.ingredientService.updateMany(cat.ingredients);
         })
     }
 }

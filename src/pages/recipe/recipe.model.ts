@@ -16,7 +16,7 @@ export class MenuHistory extends Base {
 
 export class Recipe extends Base {
 
-    checked : boolean = false;
+    isInMenuWeek : boolean = false;
     weekDay: string;
     menus: MenuHistory [];
     categories : Category[]; //to display
@@ -36,17 +36,15 @@ export class Recipe extends Base {
 
         this.weekDay = responseRecipe.weekDay;
         this.ingredient_ids = responseRecipe.ingredient_ids;
-        this.checked = responseRecipe.checked;
+        this.isInMenuWeek = responseRecipe.isInMenuWeek;
         this.menus = responseRecipe.menus;
         this.mainMealValue = responseRecipe.mainMealValue;
         this.description = responseRecipe.description;
 
     }
 
-    populateMainMeail(mainMeals) {
-
+    public populateMainMeal(mainMeals) {
         mainMeals.forEach(mainMeal => {
-
             if(mainMeal.name === this.mainMealValue){
                 this.mainMeal = mainMeal;
             }

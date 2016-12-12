@@ -47,15 +47,8 @@ export class RecipeListComponent {
         this.recipeService.getList()
             .subscribe(recipes => {
 
-                recipes.forEach(recipeResp => {
-
-                    let recipe = new Recipe();
-                    recipe.parseRecipe(recipeResp);
-
-                    this.recipes.push(recipe);
-                });
-
-                //console.log("Recipe List", this.recipes)
+                    this.recipes = recipes;
+                    //console.log("Recipe List", this.recipes)
                 },
                 err => console.error("get recipe list", err),
                 () =>
@@ -77,11 +70,11 @@ export class RecipeListComponent {
     public updateRecipe(recipe, action) {
         //action going change
         //need to put timeout to get the updated value.
-        setTimeout(()=> {
+       // setTimeout(()=> {
 
-            recipe.checked = !recipe.checked;
+            recipe.isInMenuWeek = !recipe.isInMenuWeek;
 
-            if(!recipe.checked) {
+            if(!recipe.isInMenuWeek) {
                 recipe.weekDay = null;
 
             } else {
@@ -91,12 +84,19 @@ export class RecipeListComponent {
                 recipe.menus.push(menuHistory);
             }
 
-            this.recipeService.update(recipe)
-                .then(response => console.log("Recipe Updated", response))
-                .catch(reason => console.error(reason));
+            this.recipeService.saveRecipe(recipe)
+                .subscribe(this.successUpdate, this.handleError)
 
-        }, 0);
+      //  }, 0);
 
+    }
+
+    private successUpdate(response: any) {
+        console.log("recipe updated", response)
+    }
+
+    private handleError(reason: any) {
+        console.error("recipe error", reason)
     }
 
     public openModalDays(recipe: Recipe) {
@@ -110,9 +110,9 @@ export class RecipeListComponent {
                 recipe.weekDay = result;
 
                 //*** I need to get before delete category
-                this.recipeService.update(recipe)
-                    .then(response => console.log("Recipe Updated", response))
-                    .catch(reason => console.error(reason));
+                // this.recipeService.update(recipe)
+                //     .then(response => console.log("Recipe Updated", response))
+                //     .catch(reason => console.error(reason));
 
             }
         });

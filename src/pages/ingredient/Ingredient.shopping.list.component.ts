@@ -43,8 +43,8 @@ export class IngredientShoppingListComponent
 
     onCheck(ingredient : Ingredient, category: Category, type: string) {
 
-        ingredient.checked = !ingredient.checked;
-        ingredient.updateCheck = new Date();
+        ingredient.checkedInCartShopping = !ingredient.checkedInCartShopping;
+        ingredient.updateCheckDate = new Date();
 
         if(type === 'incomplete') {
 
@@ -91,10 +91,10 @@ export class IngredientShoppingListComponent
                         this.categories.forEach(cat => {
 
                             cat.ingredients.forEach(ing => {
-                                ing.checked = false;
+                                ing.checkedInCartShopping = false;
                             });
 
-                            this.ingredientService.updateMany(cat.ingredients);
+                         //   this.ingredientService.updateMany(cat.ingredients);
 
                             this.fillCompleted();
 
@@ -107,7 +107,7 @@ export class IngredientShoppingListComponent
     }
 
     getLeft(category : Category): number {
-        let catLeft = category.ingredients.filter(ing => ing.checked === false).length;
+        let catLeft = category.ingredients.filter(ing => ing.checkedInCartShopping === false).length;
 
         //this.totalLeft += catLeft;
 
@@ -115,7 +115,7 @@ export class IngredientShoppingListComponent
     }
 
     catCompleted(category: Category) : boolean {
-        return category.ingredients.filter(ing => ing.checked === false).length === 0;
+        return category.ingredients.filter(ing => ing.checkedInCartShopping === false).length === 0;
     }
 
     private displayList(loader) {
@@ -126,7 +126,7 @@ export class IngredientShoppingListComponent
     private setTotalLeft() {
         this.totalLeft = 0;
         this.incompletedList.forEach(cat => {
-            let catLeft = cat.ingredients.filter(ing => ing.checked === false).length;
+            let catLeft = cat.ingredients.filter(ing => ing.checkedInCartShopping === false).length;
             this.totalLeft += catLeft;
         });
     }

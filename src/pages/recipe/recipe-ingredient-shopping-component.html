@@ -18,7 +18,7 @@
         <ion-list no-margin>
             <ion-item>
                 <ion-label>Select all</ion-label>
-                <ion-toggle [(ngModel)]="shopping" checked="{{shopping}}"
+                <ion-toggle [(ngModel)]="itemSelectedForShopping" checked="{{itemSelectedForShopping}}"
                             (click)="selectAll()"
                             name="toggle-all"></ion-toggle>
             </ion-item>
@@ -30,7 +30,7 @@
 
             <ion-item *ngFor="let ingredient of category.ingredients; let j=index">
                 <ion-label>{{ingredient.name}}</ion-label>
-                <ion-toggle [(ngModel)]="ingredient.shopping" checked="{{ingredient.shopping}}"
+                <ion-toggle [(ngModel)]="ingredient.itemSelectedForShopping" checked="{{ingredient.itemSelectedForShopping}}"
                             (click)="updateShopping(ingredient)"
                             name="toggle-{{i}}{{j}}"></ion-toggle>
             </ion-item>

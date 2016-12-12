@@ -32,14 +32,13 @@ export class Ingredient extends Base {
     categoryId: string;
     ing_type: string;
     recipe_ids: string [] = [];
-    checked: boolean = false;
+    checkedInCartShopping: boolean = false;
     quantities: Quantity [] = [];
-    expiryDate:string;
-    verify:boolean = false;
-    labelQuantity: string;
-    updateCheck: Date;
-    shopping: boolean;
-
+    expiryDate: string;
+    verify: boolean = false;
+    quantityUnitName: string;
+    updateCheckDate: Date;
+    itemSelectedForShopping: boolean;
 
     constructor()
     {
@@ -54,16 +53,16 @@ export class Ingredient extends Base {
         this.ing_type = responseIngredient.ing_type;
         this.expiryDate = responseIngredient.expiryDate;
         this.verify = responseIngredient.verify;
-        this.checked = responseIngredient.checked;
-        this.updateCheck = responseIngredient.updateCheck;
+        this.checkedInCartShopping = responseIngredient.isInMenuWeek;
+        this.updateCheckDate = responseIngredient.updateCheckDate;
 
 
-        this.shopping = responseIngredient.shopping;
+        this.itemSelectedForShopping = responseIngredient.itemSelectedForShopping;
 
-        //console.log("??" + this.name, this.shopping)
+        //console.log("??" + this.name, this.itemSelectedForShopping)
 
-        // if(isUndefined(responseIngredient.shopping)) {
-        //    // this.shopping = true;
+        // if(isUndefined(responseIngredient.itemSelectedForShopping)) {
+        //    // this.itemSelectedForShopping = true;
         // } else {
         //
         // }
@@ -94,19 +93,19 @@ export class Ingredient extends Base {
             });
 
             if(quantity) {
-                this.labelQuantity = quantity.qtd + " " + quantity.typeQuantity + ", *" + recipeId
+                this.quantityUnitName = quantity.qtd + " " + quantity.typeQuantity + ", *" + recipeId
             }else {
-                this.labelQuantity =" *" + recipeId
+                this.quantityUnitName =" *" + recipeId
             }
 
-          //  console.log("labelQuantity "+ this.name, this.labelQuantity, quantity)
+          //  console.log("quantityUnitName "+ this.name, this.quantityUnitName, quantity)
         }
     }
 
     getUpdateCheck(){
 
-        if(this.updateCheck){
-            let myDate: Date = new Date(this.updateCheck.toString())
+        if(this.updateCheckDate){
+            let myDate: Date = new Date(this.updateCheckDate.toString())
 
             let formatted = myDate.getDate()
                 + "/" + (myDate.getMonth() + 1)

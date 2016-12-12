@@ -46,17 +46,17 @@ export class IngredientGeneratorComponent {
 
         loader.present();
 
-        this.ingredientService.getCategoriesIngredient(null)
-            .then(categories => {
-
-                this.displayList(loader);
-                //It needs zone when came from menu footer button
-                this.categories = categories;
-            })
-            .catch(reason => {
-                this.displayList(loader);
-                console.error("problem get view", reason);
-            });
+        // this.ingredientService.getCategoriesIngredient(null)
+        //     .then(categories => {
+        //
+        //         this.displayList(loader);
+        //         //It needs zone when came from menu footer button
+        //         this.categories = categories;
+        //     })
+        //     .catch(reason => {
+        //         this.displayList(loader);
+        //         console.error("problem get view", reason);
+        //     });
     }
 
     private displayList(loader) {
@@ -102,14 +102,14 @@ export class IngredientGeneratorComponent {
 
         });
 
-        this.recipeService.getMany(recipesIdsBulk)
-            .then(response => {
-                console.log("getMany RESPONSE", response);
-
-                this.createModalRecipes(response, recipesCountObj);
-
-            })
-            .catch(reason => console.error(reason));
+        // this.recipeService.getMany(recipesIdsBulk)
+        //     .then(response => {
+        //         console.log("getMany RESPONSE", response);
+        //
+        //         this.createModalRecipes(response, recipesCountObj);
+        //
+        //     })
+        //     .catch(reason => console.error(reason));
 
         //get the recipes sorted by occurrences
         //show recipe list based on the ingredient use in each one
@@ -125,7 +125,7 @@ export class IngredientGeneratorComponent {
 
             recipe.parseRecipe(row.docs[0].ok);
 
-            recipe.populateMainMeail(this.mainMeals);
+            recipe.populateMainMeal(this.mainMeals);
 
             recipes.push(recipe);
 
