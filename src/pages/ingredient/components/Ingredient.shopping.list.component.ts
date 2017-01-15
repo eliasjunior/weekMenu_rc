@@ -2,11 +2,12 @@
  * Created by eliasmj on 11/08/2016.
  */
 
-import {IngredientService} from "./ingredient.service";
+import {IngredientService} from "../services/ingredient.service";
 import {Component, NgZone} from "@angular/core";
 import {NavParams, LoadingController, AlertController, Platform} from "ionic-angular";
-import {Category} from "./category.model";
-import {Ingredient} from "./ingredient.model";
+import {Category} from "../category.model";
+import {Ingredient} from "../ingredient.model";
+import {UtilService} from "../../services/util.service";
 
 @Component({
     selector: 'ingredient',
@@ -17,17 +18,18 @@ export class IngredientShoppingListComponent
 {
     categories : Category [] = [];
     completedList: Category [] = [];
-    incompletedList: Category [] = [];
+    uncompletedList: Category [] = [];
     recipeId: string;
     listLoaded: boolean = false;
     totalLeft: number = 0;
 
-    constructor(private ingredientService: IngredientService,
-                private navParams : NavParams,
-                private platform: Platform,
-                private loadingCtrl: LoadingController,
-                private alertCtrl: AlertController,
-                private zone : NgZone)
+    constructor(public ingredientService: IngredientService,
+                public navParams : NavParams,
+                public platform: Platform,
+                public loadingCtrl: LoadingController,
+                public alertCtrl: AlertController,
+                public util: UtilService,
+                public zone : NgZone)
     {
         this.recipeId = navParams.get('recipeId');
     }
@@ -51,8 +53,8 @@ export class IngredientShoppingListComponent
             if(this.catCompleted(category)) {
                 this.completedList.push(category);
 
-                let index = this.incompletedList.findIndex(cat => cat._id === category._id);
-                this.incompletedList.splice(index, 1);
+                let index = this.uncompletedList.findIndex(cat => cat._id === category._id);
+                this.uncompletedList.splice(index, 1);
             }
             //performance, for not hold the render
             setTimeout(()=> {
@@ -64,12 +66,13 @@ export class IngredientShoppingListComponent
             let index = this.completedList.findIndex(cat => cat._id === category._id);
             this.completedList.splice(index, 1);
 
-            this.incompletedList.push(category);
+            this.uncompletedList.push(category);
         }
 
         this.sortList();
 
-        this.ingredientService.update(ingredient);
+        //TODO add UPDATE/SAVE HERE
+        //this.ingredientService.saveIngredient()
     }
 
     resetIngredient() {
@@ -125,7 +128,7 @@ export class IngredientShoppingListComponent
 
     private setTotalLeft() {
         this.totalLeft = 0;
-        this.incompletedList.forEach(cat => {
+        this.uncompletedList.forEach(cat => {
             let catLeft = cat.ingredients.filter(ing => ing.checkedInCartShopping === false).length;
             this.totalLeft += catLeft;
         });
@@ -138,14 +141,14 @@ export class IngredientShoppingListComponent
     private fillCompleted() {
 
         this.completedList = [];
-        this.incompletedList = [];
+        this.uncompletedList = [];
 
         this.categories.forEach(category => {
 
             if(this.catCompleted(category)) {
                 this.completedList.push(category);
             } else {
-                this.incompletedList.push(category);
+                this.uncompletedList.push(category);
             }
         });
 
@@ -156,7 +159,7 @@ export class IngredientShoppingListComponent
 
     private sortList() {
         //sort by name
-        this.incompletedList.sort(function(a, b){
+        this.uncompletedList.sort(function(a, b){
             // console.log(a,'<', b)
             if(a.name < b.name) {
                 return -1
@@ -169,7 +172,7 @@ export class IngredientShoppingListComponent
         });
 
         //sort ingredient
-        this.incompletedList.forEach(category => {
+        this.uncompletedList.forEach(category => {
             category.ingredients.sort( (a,b) => {
                 // console.log(a,'<', b)
                 if(a.name.toUpperCase() < b.name.toUpperCase()) {
@@ -221,22 +224,32 @@ export class IngredientShoppingListComponent
 
         loader.present();
 
-        this.ingredientService.getViewRecipeWeekIngredient(null)
-            .then(categories => {
+        this.ingredientService.getCategoryAndIngredientShopping()
+            .subscribe(cats => {
+                console.log("Loaded", cats)
+                this.categories = cats;
 
-                //It needs zone when came from menu footer button
-                this.zone.run(() => {
+                this.fillCompleted();
+                this.util.hideLoading(loader)
 
-                    this.categories = categories;
-
-                    this.fillCompleted();
-
-                    this.displayList(loader);
-                });
-            })
-            .catch(reason => {
-                this.displayList(loader);
-                console.error("problem get view", reason);
-            });
+            }, this.util.handleError
+             ,() =>  this.util.hideLoading(loader));
     }
+
+    public getUpdateCheck(ingredient){
+
+        if(ingredient.updateCheckDate){
+            let myDate: Date = new Date(ingredient.updateCheckDate.toString())
+
+            let formatted = myDate.getDate()
+                + "/" + (myDate.getMonth() + 1)
+                +"/" + myDate.getFullYear()
+                + " " + myDate.getHours()
+                + ":" + myDate.getMinutes();
+
+            return formatted;
+        } else
+            return "";
+    }
+
 }

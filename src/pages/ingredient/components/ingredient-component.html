@@ -11,43 +11,42 @@
                 <ion-label>
                     Category
                 </ion-label>
-                <ion-select [(ngModel)]="ingredient.categoryId" required name="category" #category="ngModel"
+                <ion-select [(ngModel)]="ingredient._creator" required name="category" #category="ngModel"
                             (ngModelChange)="onChangeCat()">
+                    <ion-option [value]="'addNew'">ADD NEW</ion-option>
                     <ion-option *ngFor="let category of categories" [value]="category._id">
                         {{category.name}}
                     </ion-option>
-                    <ion-option [value]="'addNew'">ADD NEW</ion-option>
-
                 </ion-select>
             </ion-item>
-            <ion-item *ngIf="ingredient.categoryId === 'addNew'">
+            <ion-item *ngIf="ingredient._creator === 'addNew'">
                 <ion-label floating>Category's name</ion-label>
-                <ion-input type="text" [(ngModel)]="newCatName" name="newCategory" #newCategory></ion-input>
+                <ion-input type="text" [(ngModel)]="newCatName" name="newCategory" required #newCategory></ion-input>
             </ion-item>
 
-            <ion-item *ngIf="ingredient.categoryId !== 'addNew' && ingredient._id">
+            <ion-item *ngIf="ingredient._creator !== 'addNew' && currentCategory._id">
                 <ion-label floating>Category's name</ion-label>
-                <ion-input type="text" [(ngModel)]="currentCategory.name" name="catName" #catName></ion-input>
+                <ion-input type="text" [(ngModel)]="currentCategory.name" name="catName" required #catName></ion-input>
             </ion-item>
 
             <ion-item>
                 <ion-label floating>Name</ion-label>
-                <ion-input type="text" [(ngModel)]="ingredient.name" name="name" #name></ion-input>
+                <ion-input type="text" [(ngModel)]="ingredient.name" required name="name" #name></ion-input>
             </ion-item>
 
             <div class="quantity-block">
                 <span >Quantity/Volume/Kg</span>
-                <ion-item *ngFor="let t of typeQtdList" radio-group
-                          [(ngModel)]="quantity.typeQuantity" name="type" #type="ngModel" required>
-                    <ion-label>{{t}}</ion-label>
-                    <ion-radio [value]="t"></ion-radio>
+                <ion-item *ngFor="let label of labelQdyList" radio-group
+                          [(ngModel)]="attribute.labelQuantity" name="labelQuantity" #type="ngModel" required>
+                    <ion-label>{{label}}</ion-label>
+                    <ion-radio [value]="label"></ion-radio>
                 </ion-item>
 
                 <ion-item>
-                    <ion-range  min="{{getMin()}}" max="{{getMax()}}" step="{{getStep()}}" [(ngModel)]="quantity.qtd"
-                                #qtd="ngModel" name="qtd">
+                    <ion-range min="{{getMin()}}" max="{{getMax()}}" step="{{getStep()}}"
+                               [(ngModel)]="attribute.quantity" #qtd="ngModel" name="quantity">
                         <ion-icon color="secondary" range-left small name="remove"></ion-icon>
-                        <ion-icon color="secondary" range-right name="add">  {{quantity.qtd}}</ion-icon>
+                        <ion-icon color="secondary" range-right name="add"> {{attribute.quantity}}</ion-icon>
                     </ion-range>
                 </ion-item>
             </div>

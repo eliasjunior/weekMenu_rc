@@ -15,10 +15,10 @@
 
     <form  name="listForm" #listForm="ngForm">
 
-        <ion-list no-margin>
-            <ion-item>
+        <ion-list no-margin no-padding>
+            <ion-item no-margin no-padding>
                 <ion-label>Select all</ion-label>
-                <ion-toggle [(ngModel)]="itemSelectedForShopping" checked="{{itemSelectedForShopping}}"
+                <ion-toggle [(ngModel)]="isSelectedAll" checked="{{isSelectedAll}}"
                             (click)="selectAll()"
                             name="toggle-all"></ion-toggle>
             </ion-item>
@@ -28,9 +28,10 @@
 
             <ion-item-divider light>{{category.name}}</ion-item-divider>
 
-            <ion-item *ngFor="let ingredient of category.ingredients; let j=index">
+            <ion-item  *ngFor="let ingredient of category.ingredients; let j=index">
                 <ion-label>{{ingredient.name}}</ion-label>
-                <ion-toggle [(ngModel)]="ingredient.itemSelectedForShopping" checked="{{ingredient.itemSelectedForShopping}}"
+                <ion-toggle [(ngModel)]="ingredient.attributes[0].itemSelectedForShopping"
+                            checked="{{ingredient.attributes[0].itemSelectedForShopping}}"
                             (click)="updateShopping(ingredient)"
                             name="toggle-{{i}}{{j}}"></ion-toggle>
             </ion-item>

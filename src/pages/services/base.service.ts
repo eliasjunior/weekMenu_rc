@@ -4,12 +4,13 @@
 import 'rxjs/add/observable/fromPromise';
 import {Observable} from "rxjs";
 import {Toast, ToastOptions} from "ionic-native";
+import { Platform } from 'ionic-angular';
 
 export class BaseService {
 
     public host : String = "http://localhost:3000";
 
-    constructor() {
+    constructor(public  platform: Platform) {
         //for chrome
     }
 
@@ -19,12 +20,20 @@ export class BaseService {
             styling : {backgroundColor : '#32db64'},
             message : message,
             position: 'top'
-        } ;
+        };
 
-        Toast.showWithOptions(options)
-            .subscribe(null, err => {
-                console.error("toast failed", err);
-            });
+        console.log(">>>", this.platform.is('core'))
+
+        if(!this.platform.is('core')) {
+
+            Toast.showWithOptions(options)
+                .subscribe(null, err => {
+                    console.error("toast failed", err);
+                });
+        } else {
+            console.log("Toast message", message);
+        }
+
     }
 
     public messageError(message) {
@@ -35,28 +44,18 @@ export class BaseService {
             position: 'top'
         } ;
 
-        console.log("Should show toast error message")
+        console.log("Should show toast error message");
 
-        Toast.showWithOptions(options)
-            .subscribe(null, err => {
-                console.error("toast failed", err);
-            });
+        if(!this.platform.is('core')) {
+
+            Toast.showWithOptions(options)
+                .subscribe(null, err => {
+                    console.error("toast failed", err);
+                });
+        } else {
+            console.log("Toast message", message);
+        }
     }
-
-    deleteDb() {
-
-    }
-
-    add(object) {
-
-    }
-
-    update(object) {
-
-
-    }
-
-
     public errorHandler(message, reason: any) {
         console.error(reason);
 

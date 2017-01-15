@@ -4,7 +4,7 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { TabsPage } from '../pages/tabs/tabs';
 import {RecipeService} from "../pages/recipe/recipe.service";
-import {IngredientService} from "../pages/ingredient/ingredient.service";
+import {IngredientService} from "../pages/ingredient/services/ingredient.service";
 import {UtilService} from "../pages/services/util.service";
 
 

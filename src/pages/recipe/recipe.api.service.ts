@@ -1,8 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {Http, Headers, RequestOptions} from "@angular/http";
+import {Http} from "@angular/http";
 import {BaseApiService} from "../services/base.api.service";
 import {Recipe} from "./recipe.model";
+import {Category} from "../ingredient/category.model";
 
 @Injectable()
 export class RecipeApiService extends BaseApiService{
@@ -59,15 +60,32 @@ export class RecipeApiService extends BaseApiService{
         }
     }
 
-    private getHeadersOption() {
+    linkRecipeToCategory(recipeId: string, category : Category) {
 
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let requestPayLod = {
+            _id: recipeId, category : category
+        }
 
-        return options;
+        return this.http
+            .put(this.host + "/recipe/ingredient", requestPayLod,  this.getHeadersOption())
+            .map(this.extractData)
+            .catch(this.handleError)
+
     }
 
+    getRecipeCategories(recipeId: string) {
+        return this.http
+            .get(this.host + "/recipe/category/"+recipeId)
+            .map(this.extractData)
+            .catch(this.handleError)
+    }
 
+    public getRecipeAttributes(recipeId) {
+        return this.http
+            .get(this.host + "/recipe/category/currentAttribute/"+recipeId)
+            .map(this.extractData)
+            .catch(this.handleError)
+    }
 
     // private convertAndReturnObservable(data) {
     //     return Observable.create(observer => {

@@ -1,4 +1,5 @@
 import {Base} from "../model/base.model";
+import {IngredientRecipeAttributes} from "./ingredient.recipe.model";
 /**
  * Created by eliasmj on 05/08/2016.
  */
@@ -29,16 +30,18 @@ export class Quantity extends Base {
 
 export class Ingredient extends Base {
 
-    categoryId: string;
+    _creator: string;
     ing_type: string;
-    recipe_ids: string [] = [];
     checkedInCartShopping: boolean = false;
     quantities: Quantity [] = [];
     expiryDate: string;
     verify: boolean = false;
     quantityUnitName: string;
     updateCheckDate: Date;
-    itemSelectedForShopping: boolean;
+
+    tempRecipeLinkIndicator:boolean;
+
+    attributes: IngredientRecipeAttributes[];
 
     constructor()
     {
@@ -49,23 +52,13 @@ export class Ingredient extends Base {
 
         super.parse(responseIngredient);
 
-        this.categoryId = responseIngredient.categoryId;
+        this._creator = responseIngredient._creator;
         this.ing_type = responseIngredient.ing_type;
         this.expiryDate = responseIngredient.expiryDate;
         this.verify = responseIngredient.verify;
         this.checkedInCartShopping = responseIngredient.isInMenuWeek;
         this.updateCheckDate = responseIngredient.updateCheckDate;
-
-
-        this.itemSelectedForShopping = responseIngredient.itemSelectedForShopping;
-
-        //console.log("??" + this.name, this.itemSelectedForShopping)
-
-        // if(isUndefined(responseIngredient.itemSelectedForShopping)) {
-        //    // this.itemSelectedForShopping = true;
-        // } else {
-        //
-        // }
+        this.tempRecipeLinkIndicator = responseIngredient.tempRecipeLinkIndicator;
 
         if(responseIngredient.quantities) {
 
@@ -76,12 +69,6 @@ export class Ingredient extends Base {
                 this.quantities.push(quantity);
 
             });
-        }
-
-        if (!responseIngredient.recipe_ids) {
-            this.recipe_ids = [];
-        } else {
-            this.recipe_ids = responseIngredient.recipe_ids;
         }
     }
 
@@ -100,22 +87,6 @@ export class Ingredient extends Base {
 
           //  console.log("quantityUnitName "+ this.name, this.quantityUnitName, quantity)
         }
-    }
-
-    getUpdateCheck(){
-
-        if(this.updateCheckDate){
-            let myDate: Date = new Date(this.updateCheckDate.toString())
-
-            let formatted = myDate.getDate()
-                + "/" + (myDate.getMonth() + 1)
-                +"/" + myDate.getFullYear()
-                + " " + myDate.getHours()
-                + ":" + myDate.getMinutes();
-
-            return formatted;
-        } else
-            return "";
     }
 
 }

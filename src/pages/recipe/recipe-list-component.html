@@ -16,29 +16,12 @@
         <ion-list no-padding no-margin>
             <ion-item *ngFor="let recipe of recipes; let i=index" [ngClass]="{'completed': recipe.checked}">
                 <ion-label>
-                    {{recipe.name}}
-                    <span color="primary" *ngIf="recipe.weekDay"> *{{recipe.weekDay}}</span>
+                    <span class="link-style" (click)="selectItem(recipe)"> {{recipe.name}}</span>
+                    <span color="roxiado" *ngIf="recipe.weekDay"> *{{recipe.weekDay}}</span>
                 </ion-label>
-
-                <!--<ion-select [(ngModel)]="recipe.weekDay" name="weekDay-{{i}}" #weekDay="ngModel"-->
-                            <!--(ngModelChange)="updateRecipe(recipe, '')" item-right >-->
-
-
-                    <!--<ion-option value="{{weekDays.ONE}}" >Monday</ion-option>-->
-                    <!--<ion-option value="{{weekDays.TWO}}" >Tuesday</ion-option>-->
-                    <!--<ion-option value="{{weekDays.THREE}}" >Wednesday</ion-option>-->
-                    <!--<ion-option value="{{weekDays.FOUR}}" >Thursday</ion-option>-->
-                    <!--<ion-option value="{{weekDays.FIVE}}" >Friday</ion-option>-->
-                    <!--<ion-option value="{{weekDays.SIX}}" >Saturday</ion-option>-->
-                    <!--<ion-option value="{{weekDays.SEVEN}}" >Sunday</ion-option>-->
-                <!--</ion-select>-->
 
                 <button item-right clear ion-button  (click)="openModalDays(recipe)">
                     <ion-icon  name="calendar" ></ion-icon>
-                </button>
-
-                <button item-right clear ion-button  (click)="pickShopping(recipe)">
-                    <ion-icon  name="cart"  color="laranjado"></ion-icon>
                 </button>
                 <button item-right clear ion-button  (click)="updateRecipe(recipe, 'select')">
                     <ion-icon  name="checkbox"  color="secondary"></ion-icon>

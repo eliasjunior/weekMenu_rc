@@ -6,6 +6,7 @@ import {Recipe} from "../recipe/recipe.model";
 import {RecipeService} from "../recipe/recipe.service";
 import {MainMeal} from "../recipe/main.meal.model";
 import {weekDays} from "../constants/week.day.constant";
+import {RecipeIngredientShoppingComponent} from "../recipe/recipe.ingredient.shopping.component";
 
 @Component({
     selector: 'menu-component',
@@ -15,7 +16,7 @@ export class MenuComponent{
 
     public recipes : Recipe [];
 
-    public weekDays = weekDays;
+   // public weekDays = weekDays;
 
     mainMeals : MainMeal [];
 
@@ -41,8 +42,9 @@ export class MenuComponent{
         this.recipeService.getList()
             .subscribe(
                 recipesA => this.populateList(recipesA),
-                err => this.handleError("Error to get list recipe", err),
-                () => this.finalCall()
+                err => {
+                    this.recipeService.messageError(err);
+                }
             );
     }
 
@@ -56,26 +58,26 @@ export class MenuComponent{
         this.recipeService.getList()
             .subscribe(recipes => {
 
-                if(recipes.length > 0) {
+                    if(recipes.length > 0) {
 
-                    this.navCtrl.push(RecipeListComponent);
-                } else {
-                    this.navCtrl.push(RecipeComponent);
-                }
+                        this.navCtrl.push(RecipeListComponent);
+                    } else {
+                        this.navCtrl.push(RecipeComponent);
+                    }
 
-            },
-            err => console.error("error to get list recipes"))
+                },
+                err => console.error("error to get list recipes"))
     }
 
-    private populateList(recipesA: any) {
+    private populateList(recipesA: Recipe []) {
 
         recipesA = recipesA.filter((recipe) => recipe.isInMenuWeek === true);
 
         this.zone.run(() => {
 
-            this.recipes = recipesA as Recipe [];
+            this.recipes = recipesA;
 
-            //console.log("RECIPES", this.recipes)
+            console.log("RECIPES", this.recipes)
 
             //sort by week day
             this.recipes.sort(function(a, b){
@@ -102,11 +104,7 @@ export class MenuComponent{
         });
     }
 
-    private finalCall() {
-        //console.log("Finally print query, " +this.recipes.length+" recipes" )
-    }
-
-    private handleError(message,err) {
-        console.error(message, err);
+    pickUpShoppingList(recipe: Recipe) {
+        this.navCtrl.push(RecipeIngredientShoppingComponent, {recipe});
     }
 }

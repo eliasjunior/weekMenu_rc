@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 import {RecipeService} from "../recipe/recipe.service";
 import {NavController, LoadingController} from "ionic-angular";
-import {IngredientGeneratorComponent} from "../ingredient/ingredient.generator.component";
+import {IngredientGeneratorComponent} from "../ingredient/components/ingredient.generator.component";
 /**
  * Created by eliasmj on 18/09/2016.
  */

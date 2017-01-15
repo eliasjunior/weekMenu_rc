@@ -1,13 +1,13 @@
 import {Component} from "@angular/core";
 import {Platform, LoadingController, ModalController} from "ionic-angular";
-import {IngredientService} from "./ingredient.service";
-import {Category} from "./category.model";
-import {Ingredient} from "./ingredient.model";
-import {ModalRecipes} from "./modal/modal.recipes";
-import {RecipeService} from "../recipe/recipe.service";
-import {Recipe} from "../recipe/recipe.model";
-import {MainMeal} from "../recipe/main.meal.model";
-import {weekDays} from "../constants/week.day.constant";
+import {IngredientService} from "../services/ingredient.service";
+import {Category} from "../category.model";
+import {Ingredient} from "../ingredient.model";
+import {ModalRecipes} from "../modal/modal.recipes";
+import {RecipeService} from "../../recipe/recipe.service";
+import {Recipe} from "../../recipe/recipe.model";
+import {MainMeal} from "../../recipe/main.meal.model";
+import {weekDays} from "../../constants/week.day.constant";
 
 @Component({
     selector: 'ingredient',
@@ -73,22 +73,22 @@ export class IngredientGeneratorComponent {
 
             //check if the ingredient is linked to a recipe, create a json with the recipe name/id and
             //count number that the ingredient has the recipe.
-            category.ingredients
-                .filter(ingredient => {
-                    return ingredient.verify === true
-                        && ingredient.recipe_ids
-                        && ingredient.recipe_ids.length > 0
-                }).forEach(ingr => {
-
-                    ingr.recipe_ids.forEach(id => {
-
-                        if(!recipesCountObj[id]) {
-                            recipesCountObj[id] = 1;
-                        } else {
-                            recipesCountObj[id] = recipesCountObj[id] + 1;
-                        }
-                    });
-                });
+            // category.ingredients
+            //     .filter(ingredient => {
+            //         return ingredient.verify === true
+            //             && ingredient.recipe_ids
+            //             && ingredient.recipe_ids.length > 0
+            //     }).forEach(ingr => {
+            //
+            //         ingr.recipe_ids.forEach(id => {
+            //
+            //             if(!recipesCountObj[id]) {
+            //                 recipesCountObj[id] = 1;
+            //             } else {
+            //                 recipesCountObj[id] = recipesCountObj[id] + 1;
+            //             }
+            //         });
+            //     });
 
         });
 

@@ -15,8 +15,14 @@
     }
 
     .cat-completed {
-        background-color: #2ca633;
+        background-color: #47af4d;
         text-decoration: line-through;
+        color: white;
+    }
+
+    .cat-not-completed {
+        background-color: #f0ae10;
+        color: white;
     }
 
     .recipe-from-ingredient {
@@ -34,5 +40,4 @@
         }
 
     }
-
 }

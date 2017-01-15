@@ -3,7 +3,8 @@ import {NavParams, LoadingController} from "ionic-angular";
 import {Recipe} from "./recipe.model";
 import {RecipeService} from "./recipe.service";
 import {Category} from "../ingredient/category.model";
-import {IngredientService} from "../ingredient/ingredient.service";
+import {IngredientService} from "../ingredient/services/ingredient.service";
+import {Ingredient} from "../ingredient/ingredient.model";
 
 @Component({
     templateUrl: 'recipe-ingredient-shopping-component.html'
@@ -12,7 +13,7 @@ export class RecipeIngredientShoppingComponent {
 
     public categories : Category[];
     public recipe: Recipe;
-    public shopping;
+    public isSelectedAll;
 
     constructor(
         public recipeService: RecipeService,
@@ -38,58 +39,55 @@ export class RecipeIngredientShoppingComponent {
         });
         loader.present();
 
-        // this.recipeService.getViewRecipeIngredient(this.recipe._id)
-        //     .then(response =>
-        //     {
-        //         console.log("getViewRecipeIngredient VIEW", response);
-        //         this.displayList(loader);
-        //         response.rows.forEach(row => {
-        //             //ideally the query not return row.doc unefined
-        //             if(row.doc) {
-        //                 this.ingredientService
-        //                     .addRowToCategories(this.ingredientService.parseCategory(row),
-        //                         this.ingredientService.parseIngredient(row),
-        //                         this.categories);
-        //             } else {
-        //                 console.warn("Row.doc undefined", row)
-        //             }
-        //
-        //         });
-        //     })
-        //     .catch(reason => {
-        //         this.displayList(loader);
-        //         console.error("Error view", reason)
-        //     });
+        this.recipeService.getRecipeAttributes(this.recipe._id)
+            .subscribe(response => {
+
+                this.categories = response.categories;
+                console.log("Cate deep", this.categories)
+
+            }, reason => {
+                this.recipeService.messageError(reason);
+            }, () => this.displayList(loader));
     }
 
     private displayList(loader) {
         loader.dismiss();
     }
 
-    updateShopping(ingredient) {
+    updateShopping(ingredient: Ingredient) {
 
-        if(ingredient.itemSelectedForShopping) {
-            ingredient.isInMenuWeek = false;
+        //TODO need to update the item inside the array and in the 'table/collection'
+        if(ingredient.attributes && ingredient.attributes[0].itemSelectedForShopping) {
+            //TODO I dont know why is this
+            //ingredient.isInMenuWeek = false;
         }
 
-        // this.ingredientService.update(ingredient)
-        //     .then(response => console.log("Recipe Updated", response))
-        //     .catch(reason => console.error(reason));
+        this.ingredientService.saveAttributeIngredient(ingredient.attributes[0])
+            .subscribe(() => {
+                console.log("update successfully")
+            }, err =>  this.recipeService.messageError(err));
     }
 
     selectAll() {
 
+        let attributeList = [];
         this.categories.forEach(cat => {
             cat.ingredients.forEach(ing => {
-                ing.itemSelectedForShopping = this.shopping;
+                ing.attributes[0].itemSelectedForShopping = this.isSelectedAll;
+                attributeList.push(ing.attributes[0]);
 
-                if(ing.itemSelectedForShopping) {
+                //TODO need to check this
+                if(ing.attributes[0].itemSelectedForShopping ) {
                     ing.checkedInCartShopping = false;
                 }
 
             });
 
-          // this.ingredientService.updateMany(cat.ingredients);
-        })
+        });
+
+        this.ingredientService.saveManyAttribute(attributeList)
+            .subscribe(() => {
+                console.log("update successfully")
+            }, err =>  this.recipeService.messageError(err));
     }
 }

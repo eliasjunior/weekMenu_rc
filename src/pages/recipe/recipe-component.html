@@ -28,7 +28,6 @@
                 </ion-input>
             </ion-item>
 
-
         </ion-list>
 
         <ion-list>
@@ -37,13 +36,13 @@
                 <ion-icon color="secondary" name="create" item-right></ion-icon>
             </ion-list-header>
 
-            <ion-item-group *ngFor="let category of categories">
+            <ion-item-group *ngFor="let category of recipe.categories">
 
                 <ion-item-divider light>{{category.name}}</ion-item-divider>
 
                 <ion-item *ngFor="let ingredient of category.ingredients">
                     {{ingredient.name}}
-                    <ion-icon (click)="editIngredient(ingredient._id)" name="md-create"
+                    <ion-icon (click)="editIngredient(ingredient)" name="md-create"
                               color="laranjado" item-right>
                     </ion-icon>
                 </ion-item>

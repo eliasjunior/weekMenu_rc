@@ -11,42 +11,45 @@
 
 <ion-content class="ingredient" >
     <form  name="listCat" #listForm="ngForm" no-padding>
-        <ion-item-group  *ngFor="let category of incompletedList let j = index">
+        <ion-item-group  *ngFor="let category of uncompletedList let j = index" >
 
-            <!--[ngClass]="{'cat-completed' : catCompleted(category)}"-->
-            <ion-item-divider roxiado>
-                <label>{{category.name}}</label>
+            <ion-item-divider color="favorite" class="cat-not-completed">
+                <label >{{category.name}}</label>
                 <label item-right>Left {{getLeft(category)}}</label>
             </ion-item-divider>
 
-            <ion-item *ngFor="let ingredient of category.ingredients let i = index"
+            <ion-item  *ngFor="let ingredient of category.ingredients let i = index"
                       (click)="onCheck(ingredient, category, 'incomplete')"
-                      [ngClass]="{'completed': ingredient.checked}">
+                      [ngClass]="{'completed': ingredient.checkedInCartShopping}">
+
                 <h2>
                     {{ingredient.name}}, <span class="recipe-from-ingredient">{{ingredient.labelQuantity}}</span>
                 </h2>
-                <p>Last check {{ingredient.getUpdateCheck()}}</p>
+                <p>Last check {{getUpdateCheck(ingredient)}}</p>
+                <p *ngFor="let attribute of ingredient.attributes" color="roxiado">{{attribute.name}}</p>
+
             </ion-item>
         </ion-item-group>
 
-
         <!-- **** completed list ***-->
         <ion-item-group *ngFor="let category of completedList let j = index">
-            <ion-item-divider color="roxiado" class="cat-completed" >
+            <ion-item-divider class="cat-completed" >
                 {{category.name}}
             </ion-item-divider>
 
             <ion-item *ngFor="let ingredient of category.ingredients let i = index"
                       (click)="onCheck(ingredient, category, 'completed')"
-                      [ngClass]="{'completed': ingredient.checked}">
+                      [ngClass]="{'completed': ingredient.checkedInCartShopping}">
                 <h2>
                     {{ingredient.name}}, <span class="recipe-from-ingredient">{{ingredient.labelQuantity}}</span>
                 </h2>
-                <p>Last check {{ingredient.getUpdateCheck()}}</p>
+                <p>Last check {{getUpdateCheck(ingredient)}}</p>
+                <p *ngFor="let attribute of ingredient.attributes">{{attribute.name}}</p>
+
             </ion-item>
         </ion-item-group>
     </form>
-    <ion-list padding *ngIf="listLoaded">
-        <button ion-button block  (click)="resetIngredient()">Reset List</button>
+    <ion-list padding >
+        <button ion-button block  (click)="resetIngredient()" >Reset List</button>
     </ion-list>
 </ion-content>

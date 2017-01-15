@@ -9,15 +9,16 @@ import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/fromPromise';
 import {BaseService} from "../services/base.service";
 import {RecipeApiService} from "./recipe.api.service";
-import {Observable} from 'rxjs/Observable';
+import {Category} from "../ingredient/category.model";
+import {Platform} from "ionic-angular";
 
 @Injectable()
 export class RecipeService extends BaseService
 {
     private recipes: Recipe [];
 
-    constructor(private recipeApiService : RecipeApiService) {
-        super();
+    constructor(private recipeApiService : RecipeApiService, platform : Platform) {
+        super(platform);
     }
 
     getRecipe(id: String) {
@@ -33,8 +34,6 @@ export class RecipeService extends BaseService
             .catch(this.errorHandler)
     }
 
-
-
     public getMainMealList() {
         return [
             new MainMeal("fish", new MealDetail('Fish','fish.png')),
@@ -48,8 +47,21 @@ export class RecipeService extends BaseService
         ]
     }
 
-    saveRecipe(recipe: Recipe){
+    public saveRecipe(recipe: Recipe){
         return this.recipeApiService.saveRecipe(recipe)
+    }
+
+    public linkRecipeToCategory(recipeId: string, categories: Category) {
+
+        return this.recipeApiService.linkRecipeToCategory(recipeId, categories)
+    }
+
+    public getRecipeCategories(recipeId: string) {
+        return this.recipeApiService.getRecipeCategories(recipeId);
+    }
+
+    public getRecipeAttributes(recipeId: string) {
+        return this.recipeApiService.getRecipeAttributes(recipeId);
     }
 
     private convertDocsToRecipes(docs: any) : Recipe[]{
@@ -72,7 +84,7 @@ export class RecipeService extends BaseService
         let recipe = new Recipe();
         recipe.parseRecipe(doc);
 
-        return recipe;
+        return doc;
     }
 
     //TODO need to test and call

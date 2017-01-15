@@ -7,21 +7,22 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content no-padding class="home" >
+<ion-content no-padding class="home"  class="menu-component" >
 
     <ion-list >
-        <ion-item *ngFor="let recipe of recipes" (click)="selectItem(recipe)">
+        <ion-item *ngFor="let recipe of recipes" >
 
             <ion-avatar item-left *ngIf="recipe.mainMeal">
                 <img src="assets/images/{{recipe.mainMeal.mealDetail.icon}}">
             </ion-avatar>
-            <h2>
-                {{recipe.name}}
-                <span style="color: #2ca633" *ngIf="recipe.mainMealValue === 'side'">
-                    * {{recipe.mainMealValue}}
-                </span>
-            </h2>
-            <p>{{recipe.weekDay}}</p>
+            <ion-label>
+                <span class="link-style" (click)="selectItem(recipe)"> {{recipe.name}}</span>
+                <p>{{recipe.weekDay}}</p>
+            </ion-label>
+            <button  item-right ion-button (click)="pickUpShoppingList(recipe)">For Shopping</button>
+            <span style="color: #2ca633" *ngIf="recipe.mainMealValue === 'side'">
+                * {{recipe.mainMealValue}}
+            </span>
         </ion-item>
     </ion-list>
 </ion-content>

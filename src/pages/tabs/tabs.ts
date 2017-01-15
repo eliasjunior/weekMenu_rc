@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {MenuComponent} from "../menu/menu.component";
-import {IngredientShoppingListComponent} from "../ingredient/Ingredient.shopping.list.component";
+import {IngredientShoppingListComponent} from "../ingredient/components/Ingredient.shopping.list.component";
 import {SettingsComponent} from "../settings/settings.component";
 
 @Component({

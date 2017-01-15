@@ -8,6 +8,7 @@ export class Category extends Base
 {
 
     private recipe_ids : string [] = [];
+    recipeId: string;
     ingredients : Ingredient [] = [];//to display only
 
     constructor()

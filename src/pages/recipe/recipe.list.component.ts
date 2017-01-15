@@ -7,8 +7,7 @@ import {NavController, LoadingController, ModalController} from "ionic-angular";
 import {RecipeComponent} from "./recipe.component";
 import {MenuHistory, Recipe} from "./recipe.model";
 import {weekDays} from "../constants/week.day.constant";
-import {IngredientComponent} from "../ingredient/Ingredient.component";
-import {RecipeIngredientShoppingComponent} from "./recipe.ingredient.shopping.component";
+import {IngredientComponent} from "../ingredient/components/Ingredient.component";
 import {ModalSelectDays} from "./modal/modal.select.days";
 
 
@@ -108,20 +107,27 @@ export class RecipeListComponent {
             if(result) {
 
                 recipe.weekDay = result;
+                recipe.isInMenuWeek = true;
 
-                //*** I need to get before delete category
-                // this.recipeService.update(recipe)
-                //     .then(response => console.log("Recipe Updated", response))
-                //     .catch(reason => console.error(reason));
-
+                this.recipeService.saveRecipe(recipe).subscribe(this.success, this.failed)
             }
         });
 
         modal.present();
     }
 
-    public pickShopping(recipe: Recipe) {
-        this.pickUpIngredientToShop(recipe);
+    private success(response) {
+
+        console.log("Success updated", response)
+    }
+
+    private failed(reason) {
+        console.error("Success updated", reason)
+    }
+
+    selectItem(recipe: Recipe) {
+
+        this.navCtrl.push(RecipeComponent, {recipe});
     }
 
     getItems(ev: any) {
@@ -142,11 +148,5 @@ export class RecipeListComponent {
 
     private initRecipe() {
         this.recipes = this.recipesTemp;
-    }
-
-    private pickUpIngredientToShop(recipe: Recipe) {
-
-        this.navCtrl.push(RecipeIngredientShoppingComponent, {recipe : recipe});
-
     }
 }

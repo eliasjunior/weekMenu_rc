@@ -2,15 +2,16 @@
  * Created by eliasmj on 11/08/2016.
  */
 
-import {IngredientService} from "./ingredient.service";
+import {IngredientService} from "../services/ingredient.service";
 import {Component, NgZone} from "@angular/core";
 import {NavController, NavParams, ModalController, LoadingController} from "ionic-angular";
 import {IngredientComponent} from "./Ingredient.component";
-import {Category} from "./category.model";
-import {Ingredient} from "./ingredient.model";
-import {ModalConfirmation} from "./modal/modal.confirmation";
-import {Recipe} from "../recipe/recipe.model";
-import {RecipeComponent} from "../recipe/recipe.component";
+import {Category} from "../category.model";
+import {Ingredient} from "../ingredient.model";
+import {ModalConfirmation} from "../modal/modal.confirmation";
+import {Recipe} from "../../recipe/recipe.model";
+import {RecipeComponent} from "../../recipe/recipe.component";
+import {RecipeService} from "../../recipe/recipe.service";
 
 @Component({
     selector: 'ingredient',
@@ -20,13 +21,14 @@ import {RecipeComponent} from "../recipe/recipe.component";
 export class IngredientListComponent
 {
     categories : Category[];
-    categoriaTemp: Category[];
+    tempCategories: Category[];
     recipeId: string;
     listLoaded: boolean = false;
     recipe: Recipe;
 
     constructor(
         private ingredientService: IngredientService,
+        public recipeService: RecipeService,
         private navCtrl : NavController,
         private navParams : NavParams,
         public modalCtrl: ModalController,
@@ -52,35 +54,7 @@ export class IngredientListComponent
 
         this.zone.run(() => {
             this.getCategories(loader);
-            this.getRecipe();
         });
-    }
-
-    //set the checkbox based on the recipe's ingredient.
-    private setChecks(loader) {
-
-        //FIXME very slow
-        this.categories.forEach(cat => {
-            cat.ingredients.forEach(ingredient => {
-
-                if (this.recipeId) {
-
-                    //console.log("recipe_ids", ingredient.recipe_ids)
-                    if(ingredient.recipe_ids && ingredient.recipe_ids.find(id => id === this.recipeId)) {
-                        ingredient.checkedInCartShopping = true;
-                    } else {
-                        ingredient.checkedInCartShopping = false;
-                    }
-
-                } else {
-                    ingredient.checkedInCartShopping = false;
-                }
-               // console.log(">>>>>", ingredient._id)
-            });
-        });
-
-        this.hideLoading(loader);
-
     }
 
     private hideLoading(loader) {
@@ -92,17 +66,30 @@ export class IngredientListComponent
         this.navCtrl.push(IngredientComponent, {recipeId: this.recipeId});
     }
 
-    saveCheckedIng(ingredient : Ingredient) {
+    saveCheckedIng(category) {
 
-        //bug ionic or angular, isInMenuWeek ngmodel takes a few time to update
+        //check box bug
         setTimeout(() => {
-            // this.ingredientService.linkRecipeToIng(this.recipeId, ingredient)
-            //     .then(response => {
-            //         console.log("Recipes Ing saved!", response)
-            //     })
-            //     .catch(reason => this.handleError("error to add recipe_ing", reason));
-        }, 0);
 
+            let checkedIngredient =
+                category.ingredients.filter(ingredient => ingredient.tempRecipeLinkIndicator === true);
+
+            console.log("CHecked Ingredients", checkedIngredient)
+
+            if(checkedIngredient.length > 0) {
+
+                let tempCategory = Object.assign({}, category);
+                tempCategory.ingredients = checkedIngredient;
+
+                this.recipeService.linkRecipeToCategory(this.recipeId, tempCategory)
+                    .subscribe(res => {
+
+                        console.log("Link is done!", res)
+
+                    }, err => console.error(err));
+            }
+
+        }, 500);
     }
 
     backToRecipe() {
@@ -111,9 +98,12 @@ export class IngredientListComponent
         }
     }
 
-    editIngredient(ingredientId) {
-        console.log("go to ingredient component", ingredientId)
-        this.navCtrl.push(IngredientComponent, {ingredientId : ingredientId});
+    editIngredient(ingredient: Ingredient) {
+        this.navCtrl.push(IngredientComponent, {ingredient : ingredient, recipeId: this.recipeId});
+    }
+
+    editCategory(category) {
+        this.navCtrl.push(IngredientComponent, {category : category, recipeId: this.recipeId});
     }
 
     deleteCat(cat) {
@@ -136,13 +126,13 @@ export class IngredientListComponent
 
     getItems(ev: any) {
 
+        this.initCategoryList();
+
         // set val to the value of the searchbar
         let val = ev.target.value;
 
-        this.initCat();
-
         // if the value is an empty string don't filter the items
-        if (val && val.trim() != '') {
+        if (val && val.trim() !== '') {
             let cats = [];
 
             this.categories.forEach(cat => {
@@ -151,9 +141,8 @@ export class IngredientListComponent
                 });
 
                 if(filter.length > 0) {
-                   // console.log("concat filter", filter)
 
-                    cats.push(cat)
+                    cats.push(cat);
 
                     cat.ingredients = filter;
                 }
@@ -162,11 +151,6 @@ export class IngredientListComponent
 
             this.categories = cats;
         }
-
-    }
-
-    private initCat(){
-        this.categories = this.categoriaTemp;
     }
 
     private successDeletePartialCat(response, ingredients) {
@@ -186,7 +170,7 @@ export class IngredientListComponent
 
     private successsDeletedCat(message) {
         this.ingredientService.message(message);
-        this.refreshList()
+        this.refreshList();
     }
 
     private successGetCatIngredient(response: any, cat: Category) {
@@ -203,39 +187,18 @@ export class IngredientListComponent
 
     private getCategories(loader : any) {
 
-        this.ingredientService.getCategoriesIngredient(null)
+        this.ingredientService.getCategoriesIngredient(this.recipeId)
             .subscribe(cats => {
+                    console.log("Loaded", cats)
                 this.categories = cats;
-            }, err => console.error(err)
-             , () =>   loader.dismiss());
 
-        // this.ingredientService.getCategoriesIngredient(null)
-        //     .then(response =>
-        //     {
-        //         console.log("categories response", response)
-        //
-        //         this.categories = response;
-        //
-        //         //search
-        //         this.categoriaTemp = this.categories;
-        //
-        //         this.setChecks(loader);
-        //     })
-        //     .catch(reason => {
-        //         console.error("Error getCategoriesIngredient", reason);
-        //         loader.dismiss();
-        //     });
+                this.tempCategories = this.categories;
+
+            }, err => console.error(err)
+             , () =>   this.hideLoading(loader));
     }
 
-    private getRecipe() {
-
-        if(this.recipeId) {
-            // this.ingredientService.get(this.recipeId)
-            //     .then(recipe => {
-            //         this.recipe = new Recipe();
-            //         this.recipe.parseRecipe(recipe);
-            //     })
-            //     .catch(reason => this.handleError("error get", reason));
-        }
+    private initCategoryList() {
+        this.categories = this.tempCategories;
     }
 }
