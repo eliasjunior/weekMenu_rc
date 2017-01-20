@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {RecipeService} from "../recipe/recipe.service";
-import {NavController, LoadingController, ModalController} from "ionic-angular";
+import {NavController, ModalController} from "ionic-angular";
 import {IngredientGeneratorComponent} from "../ingredient/components/ingredient.generator.component";
 import {ModalHosts} from "../ingredient/modal/modal.hosts";
 import {IngredientService} from "../ingredient/services/ingredient.service";

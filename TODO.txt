@@ -1,0 +1,8 @@
+TODO
+
+Ingredient component
+ Easy
+  -- Create add new ingredient/category
+
+Ingredient list component
+  -- add recipe's name at the top

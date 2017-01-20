@@ -1,7 +1,6 @@
 /**
  * Created by eliasmj on 11/08/2016.
  */
-
 import {IngredientService} from "../services/ingredient.service";
 import {Component, NgZone} from "@angular/core";
 import {NavParams, LoadingController, AlertController, Platform} from "ionic-angular";

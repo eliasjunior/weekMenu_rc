@@ -5,7 +5,7 @@ import {Component} from "@angular/core";
 import {Ingredient} from "../ingredient.model";
 import {Category} from "../category.model";
 import {IngredientService} from "../services/ingredient.service";
-import {NavParams, ActionSheetController} from "ionic-angular";
+import {NavParams, ActionSheetController, LoadingController} from "ionic-angular";
 import {QuantityType} from "../../constants/quantity.type.constant";
 import {IngredientRecipeAttributes} from "../ingredient.recipe.model";
 import {UtilService} from "../../services/util.service";
@@ -36,7 +36,8 @@ export class IngredientComponent {
     constructor(public  ingredientService : IngredientService,
                 private navParams: NavParams,
                 private actionSheetCtrl: ActionSheetController,
-                private utilService: UtilService
+                private utilService: UtilService,
+                private loadingCtrl: LoadingController,
     ) {
 
 
@@ -62,36 +63,15 @@ export class IngredientComponent {
 
         this.categories = [];
 
+        let loader = this.getLoading();
+
         //for the select list.
         this.ingredientService.getCategories()
-            .subscribe(cats => {
-                    this.categories = cats;
-
-                    let tempCat = this.categories.find(cat => cat._id === this.ingredient._creator);
-                    if(tempCat) {
-                        this.currentCategory = tempCat;
-                    } else {
-                        console.log("category not found");
-                    }
-
-                    if (this.ingredient._id) {
-
-                        this.ingredientService.getIngredientRecipeAttributes(this.ingredient._id, this.recipeId)
-                            .subscribe(attributes => {
-
-                                this.attribute = attributes;
-
-                            }, err => {
-                                this.utilService.messageError(err)
-                            });
-
-                    } else {
-                        this.createQuantity();
-                    }
-
-                },
+            .subscribe(
+                this.successGetCats.bind(this, loader),
                 err => {
                     this.handleError("get categories load page",err);
+                    this.dismissLoader(loader);
                 }
             );
     }
@@ -130,7 +110,6 @@ export class IngredientComponent {
 
     onChangeCat() {
 
-
         if (this.ingredient._creator === 'addNew')  {
             this.showNewCat = true;
             this.currentCategory = new Category();
@@ -151,6 +130,8 @@ export class IngredientComponent {
     //Ingredient 1 x N cat
     saveIngredientCategory(){
 
+        let loader = this.getLoading();
+
         if(this.recipeId) {
             this.currentCategory.recipeId = this.recipeId;
         }
@@ -161,8 +142,10 @@ export class IngredientComponent {
             this.ingredientService.saveCategory(this.currentCategory)
                 .subscribe((doc) => {
                     this.saveIngredientAndAttributes(doc);
+                    this.dismissLoader(loader);
                 }, err => {
-                    this.utilService.messageError(err)
+                    this.utilService.messageError(err);
+                    this.dismissLoader(loader);
                 });
 
         } else {
@@ -170,19 +153,20 @@ export class IngredientComponent {
             this.ingredientService.saveCategory(this.currentCategory)
                 .subscribe(() => {
                     this.saveIngredientAndAttributes(this.currentCategory);
+                    this.dismissLoader(loader);
 
                 }, err => {
-                    this.utilService.messageError(err)
+                    this.utilService.messageError(err);
+                    this.dismissLoader(loader);
                 });
         }
-
     }
 
-    getMin() {
+    public getMin() {
         return 0;
     }
 
-    getMax() {
+    public getMax() {
 
         if(this.attribute.labelQuantity === QuantityType.KG) {
             return 2000;
@@ -191,7 +175,7 @@ export class IngredientComponent {
         }
     }
 
-    getStep() {
+    public getStep() {
 
         if(this.attribute.labelQuantity === QuantityType.KG) {
             return 100;
@@ -231,6 +215,50 @@ export class IngredientComponent {
         this.attribute.labelQuantity = QuantityType.KG,
         this.attribute.recipeId = this.recipeId;
         this.attribute.quantity = this.getMin();
+    }
+
+    private successGetCats(loader, cats) {
+
+        this.categories = cats;
+
+        let tempCat = this.categories.find(cat => cat._id === this.ingredient._creator);
+        if(tempCat) {
+            this.currentCategory = tempCat;
+        } else {
+            console.log("category not found");
+        }
+
+        if (this.ingredient._id) {
+
+            this.ingredientService.getIngredientRecipeAttributes(this.ingredient._id, this.recipeId)
+                .subscribe(attributes => {
+
+                    this.attribute = attributes;
+
+                }, err => {
+                    this.utilService.messageError(err)
+                });
+
+        } else {
+            this.createQuantity();
+        }
+
+        this.dismissLoader(loader);
+    }
+
+    private getLoading() {
+        let loader = this.loadingCtrl.create({
+            content: "Please wait..."
+        });
+
+        loader.present();
+
+        return loader;
+    }
+
+    private dismissLoader(loader) {
+        loader.dismiss();
+        console.log("dismiss loading!")
     }
 
 }

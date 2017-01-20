@@ -32,14 +32,14 @@ export class RecipeApiService extends BaseApiService{
         }
     }
 
-    get(id: String){
+    public get(id: String){
         return this.http
             .get(this.host + "/recipe/"+id)
             .map(this.extractData)
             .catch(this.handleError)
     }
 
-    saveRecipe(recipe: Recipe){
+    public saveRecipe(recipe: Recipe){
 
         //add date to the recipes
         recipe.menus = [];
@@ -60,7 +60,7 @@ export class RecipeApiService extends BaseApiService{
         }
     }
 
-    linkRecipeToCategory(recipeId: string, ingredient: Ingredient) {
+    public linkRecipeToCategory(recipeId: string, ingredient: Ingredient) {
 
         let requestPayLod = {
             _id: recipeId, ingredient : ingredient
@@ -73,7 +73,7 @@ export class RecipeApiService extends BaseApiService{
 
     }
 
-    getRecipeCategories(recipeId: string) {
+    public getRecipeCategories(recipeId: string) {
         return this.http
             .get(this.host + "/recipe/category/"+recipeId)
             .map(this.extractData)
@@ -86,13 +86,4 @@ export class RecipeApiService extends BaseApiService{
             .map(this.extractData)
             .catch(this.handleError)
     }
-
-    // private convertAndReturnObservable(data) {
-    //     return Observable.create(observer => {
-    //         observer.next(data);
-    //         observer.complete();
-    //     });
-    // }
-
-
 }

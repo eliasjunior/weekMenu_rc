@@ -1,9 +1,8 @@
 /**
  * Created by eliasmj on 11/08/2016.
  */
-
 import {IngredientService} from "../services/ingredient.service";
-import {Component, NgZone} from "@angular/core";
+import {Component} from "@angular/core";
 import {NavController, NavParams, ModalController, LoadingController} from "ionic-angular";
 import {IngredientComponent} from "./Ingredient.component";
 import {Category} from "../category.model";
@@ -34,7 +33,6 @@ export class IngredientListComponent
         private navParams : NavParams,
         public modalCtrl: ModalController,
         private loadingCtrl: LoadingController,
-        private zone : NgZone,
         private utilService: UtilService
     )
     {
@@ -43,26 +41,9 @@ export class IngredientListComponent
 
     ionViewDidEnter(){
 
-        this.refreshList();
+        this.refreshList(null);
     }
 
-    private refreshList() {
-
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
-        });
-
-        loader.present();
-
-        this.zone.run(() => {
-            this.getCategories(loader);
-        });
-    }
-
-    private hideLoading(loader) {
-        this.listLoaded = true;
-        loader.dismiss();
-    }
 
     addIngredient() {
         this.navCtrl.push(IngredientComponent, {recipeId: this.recipeId});
@@ -146,23 +127,47 @@ export class IngredientListComponent
         this.utilService.messageError(message);
     }
 
-    private getCategories(loader : any) {
+    private initCategoryList() {
+        this.categories = this.tempCategories;
+    }
+
+    private refreshList(refresher) {
+
+        let loader = this.getLoading();
 
         this.ingredientService.getCategoriesIngredient(this.recipeId)
             .subscribe(cats => {
-                    console.log("Loaded", cats)
+                console.log("Loaded", cats)
                 this.categories = cats;
 
                 this.tempCategories = this.categories;
-                this.hideLoading(loader);
+                this.dismissLoader(loader, refresher);
 
             }, err => {
-                this.hideLoading(loader);
+                this.dismissLoader(loader, refresher);
                 this.handleError("get categories load page",err)
             });
+
+        // this.zone.run(() => {
+        //
+        // });
     }
 
-    private initCategoryList() {
-        this.categories = this.tempCategories;
+    private getLoading() {
+        let loader = this.loadingCtrl.create({
+            content: "Please wait..."
+        });
+
+        loader.present();
+
+        return loader;
+    }
+
+    private dismissLoader(loader, refresher) {
+        if(refresher) {
+            refresher.complete();
+        }
+        loader.dismiss();
+        console.log("dismiss loading!")
     }
 }

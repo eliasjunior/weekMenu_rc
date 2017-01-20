@@ -1,5 +1,5 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, Platform} from "ionic-angular";
+import {NavController, Platform, LoadingController} from "ionic-angular";
 import {RecipeComponent} from "../recipe/recipe.component";
 import {RecipeListComponent} from "../recipe/recipe.list.component";
 import {Recipe} from "../recipe/recipe.model";
@@ -19,29 +19,34 @@ export class MenuComponent{
 
     constructor(private navCtrl: NavController,
                 private recipeService: RecipeService,
-                private platform: Platform,
                 private zone: NgZone,
-                private utilService: UtilService) {
+                private utilService: UtilService,
+                private loadingCtrl: LoadingController,) {
         this.mainMeals = this.recipeService.getMainMealList();
     }
 
     ionViewDidEnter() {
 
-        this.platform.ready().then(() => {
-
-            this.refreshList();
-        });
+        this.refreshList(null);
     }
 
-    private refreshList() {
+    public refreshList(refresher) {
 
         this.recipes = [];
 
+        let loader = this.getLoading();
+
+        this.dismissLoader(loader, refresher);
+
         this.recipeService.getList()
             .subscribe(
-                recipesA => this.populateList(recipesA),
+                recipesA =>{
+                    this.populateList(recipesA);
+                    this.dismissLoader(loader, refresher);
+                },
                 err => {
                     this.utilService.messageError(err);
+                    this.dismissLoader(loader, refresher);
                 }
             );
     }
@@ -104,5 +109,23 @@ export class MenuComponent{
 
     pickUpShoppingList(recipe: Recipe) {
         this.navCtrl.push(RecipeIngredientShoppingComponent, {recipe});
+    }
+
+    private getLoading() {
+        let loader = this.loadingCtrl.create({
+            content: "Please wait..."
+        });
+
+        loader.present();
+
+        return loader;
+    }
+
+    private dismissLoader(loader, refresher) {
+        if(refresher) {
+            refresher.complete();
+        }
+        loader.dismiss();
+        console.log("dismiss loading!")
     }
 }

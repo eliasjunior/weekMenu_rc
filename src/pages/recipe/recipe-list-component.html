@@ -11,6 +11,15 @@
 
 <ion-content class="recipe-component" no-paddings>
 
+    <ion-refresher (ionRefresh)="refreshList($event)">
+        <ion-refresher-content
+                pullingIcon="arrow-dropdown"
+                pullingText="Pull to refresh"
+                refreshingSpinner="circles"
+                refreshingText="Refreshing...">
+        </ion-refresher-content>
+    </ion-refresher>
+
     <form  name="listForm" #listForm="ngForm">
         <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
         <ion-list no-padding no-margin>
@@ -23,10 +32,11 @@
                 <button item-right clear ion-button  (click)="openModalDays(recipe)">
                     <ion-icon  name="calendar" ></ion-icon>
                 </button>
-                <button item-right clear ion-button  (click)="updateRecipe(recipe, 'select')">
-                    <ion-icon  name="checkbox"  color="secondary"></ion-icon>
-                </button>
+                <!--<button item-right clear ion-button  (click)="updateRecipe(recipe, 'select')">-->
+                    <!--<ion-icon  name="checkbox"  color="secondary"></ion-icon>-->
+                <!--</button>-->
             </ion-item>
         </ion-list>
+        <button ion-button block (click)="resetWeekList()" >Reset Week List</button>
     </form>
 </ion-content>

@@ -4,8 +4,7 @@ import {Injectable} from "@angular/core";
 import {BaseService} from "../../services/base.service";
 import {IngredientApiService} from "./ingredient.api.service";
 import {IngredientRecipeAttributes} from "../ingredient.recipe.model";
-import 'rxjs/add/operator/map';
-import {Observable} from "rxjs";
+import "rxjs/add/operator/map";
 import {Platform} from "ionic-angular";
 
 /**

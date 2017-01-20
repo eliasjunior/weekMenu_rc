@@ -51,11 +51,7 @@ export class RecipeComponent {
 
     public refreshListIngredients(refresher) {
 
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
-        });
-
-        loader.present();
+        let loader = this.getLoading();
 
         this.recipeService.getRecipeCategories(this.recipe._id)
             .subscribe(
@@ -63,24 +59,17 @@ export class RecipeComponent {
 
                     this.recipe = recipe;
 
-                    this.displayList(loader, refresher);
+                    this.dismissLoader(loader, refresher);
                 },
                 err => {
                     console.error("Got here in the compononet", err)
-                    this.displayList(loader, refresher);
+                    this.dismissLoader(loader, refresher);
                 });
 
     }
 
-    private displayList(loader, refresher) {
-        if(refresher) {
-            refresher.complete();
-        }
-        loader.dismiss();
-        console.log("dismiss loading!")
-    }
 
-    addIngredient(recipeId : string){
+    public addIngredient(recipeId : string){
 
         if(!recipeId) {
             console.warn("problem, recipe is null!!");
@@ -92,14 +81,16 @@ export class RecipeComponent {
 
     }
 
-    editIngredient(ingredient) {
+    public editIngredient(ingredient) {
 
         console.log("Ingredient ", ingredient)
 
         this.navCtrl.push(IngredientComponent, {ingredient : ingredient, recipeId: this.recipe._id});
     }
 
-    saveRecipe(){
+    public saveRecipe(){
+
+        let loader = this.getLoading();
 
         this.recipeService.saveRecipe(this.recipe)
             .subscribe(response =>
@@ -110,7 +101,30 @@ export class RecipeComponent {
 
                 this.utilService.message('Recipe saved successfully!');
 
-            }, err => console.error("Error to get post recipe"))
+                this.dismissLoader(loader, null);
 
+            },
+            err => {
+                console.error("Got here in the compononet", err)
+                this.dismissLoader(loader, null);
+            });
+    }
+
+    private getLoading() {
+        let loader = this.loadingCtrl.create({
+            content: "Please wait..."
+        });
+
+        loader.present();
+
+        return loader;
+    }
+
+    private dismissLoader(loader, refresher) {
+        if(refresher) {
+            refresher.complete();
+        }
+        loader.dismiss();
+        console.log("dismiss loading!")
     }
 }

@@ -21,12 +21,6 @@ export class RecipeService extends BaseService
         super(platform);
     }
 
-    getRecipe(id: String) {
-        return this.recipeApiService.get(id)
-            .map(this.convertDocToRecipes)
-            .catch(this.errorHandler)
-    }
-
     getList() {
 
         return this.recipeApiService.geRecipeDocs()
