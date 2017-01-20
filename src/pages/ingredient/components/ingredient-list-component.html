@@ -23,7 +23,7 @@
                 <ion-label>{{ingredient.name}}</ion-label>
                 <ion-checkbox color="secondary" item-left [(ngModel)]="ingredient.tempRecipeLinkIndicator"
                               name="checked-{{i}}-{{j}}"
-                              (click)="saveCheckedIng(category)" ></ion-checkbox>
+                              (click)="saveCheckedIng(ingredient)" ></ion-checkbox>
 
                 <button ion-button icon-only clear item-right (click)="editIngredient(ingredient)">
                     <ion-icon name="create" item-right ></ion-icon>

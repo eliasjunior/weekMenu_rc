@@ -12,6 +12,7 @@ import {ModalConfirmation} from "../modal/modal.confirmation";
 import {Recipe} from "../../recipe/recipe.model";
 import {RecipeComponent} from "../../recipe/recipe.component";
 import {RecipeService} from "../../recipe/recipe.service";
+import {UtilService} from "../../services/util.service";
 
 @Component({
     selector: 'ingredient',
@@ -33,7 +34,8 @@ export class IngredientListComponent
         private navParams : NavParams,
         public modalCtrl: ModalController,
         private loadingCtrl: LoadingController,
-        private zone : NgZone
+        private zone : NgZone,
+        private utilService: UtilService
     )
     {
         this.recipeId = navParams.get('recipeId');
@@ -66,28 +68,17 @@ export class IngredientListComponent
         this.navCtrl.push(IngredientComponent, {recipeId: this.recipeId});
     }
 
-    saveCheckedIng(category) {
+    saveCheckedIng(ingredient) {
 
         //check box bug
         setTimeout(() => {
 
-            let checkedIngredient =
-                category.ingredients.filter(ingredient => ingredient.tempRecipeLinkIndicator === true);
-
-            console.log("CHecked Ingredients", checkedIngredient)
-
-            if(checkedIngredient.length > 0) {
-
-                let tempCategory = Object.assign({}, category);
-                tempCategory.ingredients = checkedIngredient;
-
-                this.recipeService.linkRecipeToCategory(this.recipeId, tempCategory)
+                this.recipeService.linkRecipeToCategory(this.recipeId, ingredient)
                     .subscribe(res => {
 
                         console.log("Link is done!", res)
 
                     }, err => console.error(err));
-            }
 
         }, 500);
     }
@@ -114,10 +105,7 @@ export class IngredientListComponent
         modal.onDidDismiss(result => {
 
             if(result === 'yes') {
-                //*** I need to get before delete category
-                // this.ingredientService.getCategoriesIngredient(cat._id)
-                //     .then(response => this.successGetCatIngredient(response, cat))
-                //     .catch(reason => this.handleError("getCategoriesIngredient",reason));
+             //TODO
             }
         });
 
@@ -153,37 +141,10 @@ export class IngredientListComponent
         }
     }
 
-    private successDeletePartialCat(response, ingredients) {
-        console.log("Cat Deleted!", response);
-
-        //delete all ingredient from this category
-        // this.ingredientService._deleteMany(ingredients)
-        //     .then(response => this.successsDeletedCat("Category and ingredients deleted!"))
-        //     .catch(reason => this.handleError("Problem to delete ingredients", reason));
-    }
-
     private handleError(message, reason) {
         console.error(message, reason);
-        this.ingredientService.messageError(message);
+        this.utilService.messageError(message);
     }
-
-
-    private successsDeletedCat(message) {
-        this.ingredientService.message(message);
-        this.refreshList();
-    }
-
-    private successGetCatIngredient(response: any, cat: Category) {
-
-        let ingredients : Ingredient [] = response[0].ingredients;
-
-        console.log("ING PER CAT", ingredients);
-
-        // this.ingredientService._delete(cat)
-        //     .then(response => this.successDeletePartialCat(response, ingredients))
-        //     .catch(reason => this.handleError("successDeletePartialCat",reason));
-    }
-
 
     private getCategories(loader : any) {
 
@@ -193,9 +154,12 @@ export class IngredientListComponent
                 this.categories = cats;
 
                 this.tempCategories = this.categories;
+                this.hideLoading(loader);
 
-            }, err => console.error(err)
-             , () =>   this.hideLoading(loader));
+            }, err => {
+                this.hideLoading(loader);
+                this.handleError("get categories load page",err)
+            });
     }
 
     private initCategoryList() {

@@ -1,0 +1,33 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Choose the server host
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button icon-only (click)="dismiss()">
+                <span color="primary" showWhen="ios" (click)="dismiss()">Cancel</span>
+                <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+    <ion-list>
+        <ion-item *ngFor="let host of hosts" radio-group  [(ngModel)]="selectedHost"
+                  name="selectedHost" #name="ngModel" required>
+            <ion-label>{{host.label}}</ion-label>
+            <ion-radio [value]="host.url"   ></ion-radio>
+        </ion-item>
+
+        <ion-item *ngIf="selectedHost === 'custom'">
+            <ion-label primary>Custom</ion-label>
+            <ion-input type="text" placeholder="Custom Host" [(ngModel)]="customField" name="custom"
+                       #name="ngModel" required>
+            </ion-input>
+        </ion-item>
+    </ion-list>
+
+    <button ion-button color="danger"  block (click)="dismissSettingHost()" >OK</button>
+</ion-content>

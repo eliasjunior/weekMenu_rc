@@ -8,6 +8,7 @@ import {IngredientService} from "../services/ingredient.service";
 import {NavParams, ActionSheetController} from "ionic-angular";
 import {QuantityType} from "../../constants/quantity.type.constant";
 import {IngredientRecipeAttributes} from "../ingredient.recipe.model";
+import {UtilService} from "../../services/util.service";
 
 @Component({
     selector: 'page-ingredient-component',
@@ -34,7 +35,8 @@ export class IngredientComponent {
 
     constructor(public  ingredientService : IngredientService,
                 private navParams: NavParams,
-                private actionSheetCtrl: ActionSheetController
+                private actionSheetCtrl: ActionSheetController,
+                private utilService: UtilService
     ) {
 
 
@@ -80,7 +82,7 @@ export class IngredientComponent {
                                 this.attribute = attributes;
 
                             }, err => {
-                                this.ingredientService.messageError(err)
+                                this.utilService.messageError(err)
                             });
 
                     } else {
@@ -88,7 +90,9 @@ export class IngredientComponent {
                     }
 
                 },
-                err => console.error("Error to getCategories")
+                err => {
+                    this.handleError("get categories load page",err);
+                }
             );
     }
 
@@ -141,14 +145,7 @@ export class IngredientComponent {
     }
 
     deleteIngredient() {
-        // this.ingredientService._delete(this.ingredient)
-        //     .then(response =>
-        //     {
-        //         this.ingredient = new Ingredient();
-        //         this.currentCategory = new Category();
-        //         console.log("deleted!", response)
-        //     })
-        //     .catch(err => console.error("Error deleting", err));
+        this.utilService.message("Not Done")
     }
 
     //Ingredient 1 x N cat
@@ -165,7 +162,7 @@ export class IngredientComponent {
                 .subscribe((doc) => {
                     this.saveIngredientAndAttributes(doc);
                 }, err => {
-                    this.ingredientService.messageError(err)
+                    this.utilService.messageError(err)
                 });
 
         } else {
@@ -175,7 +172,7 @@ export class IngredientComponent {
                     this.saveIngredientAndAttributes(this.currentCategory);
 
                 }, err => {
-                    this.ingredientService.messageError(err)
+                    this.utilService.messageError(err)
                 });
         }
 
@@ -220,8 +217,13 @@ export class IngredientComponent {
                 console.log("Ingredient saved", result)
 
             }, err => {
-                this.ingredientService.messageError(err)
+                this.utilService.messageError(err)
             } )
+    }
+
+    private handleError(message, reason) {
+        console.error(message, reason);
+        this.utilService.messageError(message);
     }
 
     private createQuantity(){

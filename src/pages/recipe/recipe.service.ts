@@ -9,15 +9,15 @@ import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/fromPromise';
 import {BaseService} from "../services/base.service";
 import {RecipeApiService} from "./recipe.api.service";
-import {Category} from "../ingredient/category.model";
 import {Platform} from "ionic-angular";
+import {Ingredient} from "../ingredient/ingredient.model";
 
 @Injectable()
 export class RecipeService extends BaseService
 {
     private recipes: Recipe [];
 
-    constructor(private recipeApiService : RecipeApiService, platform : Platform) {
+    constructor(public recipeApiService : RecipeApiService, platform : Platform) {
         super(platform);
     }
 
@@ -51,9 +51,9 @@ export class RecipeService extends BaseService
         return this.recipeApiService.saveRecipe(recipe)
     }
 
-    public linkRecipeToCategory(recipeId: string, categories: Category) {
+    public linkRecipeToCategory(recipeId: string, ingredient: Ingredient) {
 
-        return this.recipeApiService.linkRecipeToCategory(recipeId, categories)
+        return this.recipeApiService.linkRecipeToCategory(recipeId, ingredient)
     }
 
     public getRecipeCategories(recipeId: string) {

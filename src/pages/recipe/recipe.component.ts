@@ -1,17 +1,13 @@
 /**
  * Created by eliasmj on 05/08/2016.
  */
-import {Component, Input} from '@angular/core';
+import {Component, Input} from "@angular/core";
 import {NavController, NavParams, LoadingController} from "ionic-angular";
 import {IngredientComponent} from "../ingredient/components/Ingredient.component";
 import {RecipeService} from "./recipe.service";
 import {Recipe} from "./recipe.model";
-import {RecipeListComponent} from "./recipe.list.component";
-import {IngredientService} from "../ingredient/services/ingredient.service";
 import {IngredientListComponent} from "../ingredient/components/Ingredient.list.component";
-import {Category} from "../ingredient/category.model";
-import {Response} from "@angular/http";
-import {Observable} from "rxjs";
+import {UtilService} from "../services/util.service";
 
 @Component({
     selector: 'recipe-component',
@@ -26,7 +22,8 @@ export class RecipeComponent {
     constructor(private navCtrl : NavController,
                 private navParam : NavParams,
                 private recipeService: RecipeService,
-                private loadingCtrl: LoadingController){
+                private loadingCtrl: LoadingController,
+                private utilService: UtilService){
 
 
         this.navCtrl = navCtrl;
@@ -34,7 +31,8 @@ export class RecipeComponent {
         if(this.navParam.get('recipe')) {
             this.recipe = this.navParam.get('recipe');
 
-        } else {
+        } else if(!this.recipe){
+
             this.recipe = new Recipe();
         }
 
@@ -45,36 +43,48 @@ export class RecipeComponent {
 
         //get from here instead the attribute class recipe
         if(this.navParam.get('recipe')) {
-            this.refreshListIngredients();
+
+            this.refreshListIngredients(null);
+
         }
     }
 
-    private refreshListIngredients() {
+    public refreshListIngredients(refresher) {
 
         let loader = this.loadingCtrl.create({
             content: "Please wait..."
         });
+
         loader.present();
 
         this.recipeService.getRecipeCategories(this.recipe._id)
-            .subscribe(recipe => {
+            .subscribe(
+                recipe => {
 
-                this.recipe = recipe;
+                    this.recipe = recipe;
 
-            }, err => console.error(err)
-             ,() => this.displayList(loader))
+                    this.displayList(loader, refresher);
+                },
+                err => {
+                    console.error("Got here in the compononet", err)
+                    this.displayList(loader, refresher);
+                });
 
     }
 
-    private displayList(loader) {
+    private displayList(loader, refresher) {
+        if(refresher) {
+            refresher.complete();
+        }
         loader.dismiss();
+        console.log("dismiss loading!")
     }
 
     addIngredient(recipeId : string){
 
         if(!recipeId) {
             console.warn("problem, recipe is null!!");
-            this.recipeService.message('Tap Save before add ingredients')
+            this.utilService.message('Tap Save before add ingredients')
         } else {
 
             this.navCtrl.push(IngredientListComponent, {recipeId : recipeId});
@@ -98,7 +108,7 @@ export class RecipeComponent {
 
                 this.recipe._id = response._id;
 
-                this.recipeService.message('Recipe saved successfully!');
+                this.utilService.message('Recipe saved successfully!');
 
             }, err => console.error("Error to get post recipe"))
 

@@ -1,7 +1,10 @@
 import {Component} from "@angular/core";
 import {RecipeService} from "../recipe/recipe.service";
-import {NavController, LoadingController} from "ionic-angular";
+import {NavController, LoadingController, ModalController} from "ionic-angular";
 import {IngredientGeneratorComponent} from "../ingredient/components/ingredient.generator.component";
+import {ModalHosts} from "../ingredient/modal/modal.hosts";
+import {IngredientService} from "../ingredient/services/ingredient.service";
+import {UtilService} from "../services/util.service";
 /**
  * Created by eliasmj on 18/09/2016.
  */
@@ -13,62 +16,25 @@ import {IngredientGeneratorComponent} from "../ingredient/components/ingredient.
 export class SettingsComponent
 {
     constructor(
-        public recipeService: RecipeService,
-        public navController : NavController,
-       // public modalCtrl: ModalController,
-        private loadingCtrl: LoadingController
+        private recipeService: RecipeService,
+        private ingredientService: IngredientService,
+        private navController : NavController,
+        private modalCtrl: ModalController,
+        private utilService: UtilService
     ){}
 
-    backup() {
-        //this is duplicating the db on my local couchDB server.
-        //use the couch db tool to see the db, applications Apache couchDB
+    setServerApi() {
 
-       // let loader = this.loading();
+        let modal = this.modalCtrl.create(ModalHosts);
 
-        // this.recipeService.syncDataBase()
-        //     .on('complete', () => {
-        //
-        //         this.alert('Success', 'Backup done!');
-        //         this.hideLoading(loader);
-        //
-        //     })
-        //     .on('error', err => {
-        //
-        //         //this.alert('Failed', 'Failed');
-        //         console.error("Sync failed!", err);
-        //         this.hideLoading(loader);
-        //         this.handleError("Sync failed!", err);
-        //     });
-    }
+        modal.onDidDismiss(result => {
+            console.log("result ", result);
 
-    private loading() : any {
-
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
+            this.recipeService.recipeApiService.host = result;
+            this.ingredientService.ingredientApiService.host = result;
         });
 
-        loader.present();
-
-        return loader;
-    }
-
-    private hideLoading(loader) {
-        loader.dismiss();
-    }
-
-    importBackup() {
-        // this.recipeService.importSyncDataBase()
-        //     .then(response => {
-        //
-        //         this.alert('Success', 'Import done!');
-        //         console.log("Success imported", response)
-        //
-        //     })
-        //     .catch(reason => {
-        //         console.error("error to import", reason)
-        //         this.handleError('Failed', 'Failed to import')
-        //     })
-
+        modal.present();
     }
 
     showHistory() {
@@ -86,46 +52,14 @@ export class SettingsComponent
 
         //TODO get from DB
 
-        this.recipeService.message('Load successful!')
+        this.utilService.message('Load successful!')
 
         this.alert('Success', 'Loaded successfully')
     }
 
-    deleteDb() {
-
-        // let modal = this.modalCtrl.create(ModalConfirmation, {'contentMessage' : 'Are you to delete the database ?'});
-        //
-        // modal.onDidDismiss(result => {
-        //     console.log("result ", result);
-        //
-        //     if(result === 'yes') {
-        //
-        //         this.recipeService.deleteDb()
-        //             .then(response => {
-        //                 this.alert(null, 'Deleted successfully, reload the app')
-        //
-        //                 //this.recipeService.initDB();
-        //             }).catch(reason => {
-        //             console.error('error to delete', reason)
-        //             this.alert('Error', 'Error to delete the db')
-        //         });
-        //     }
-        //
-        // });
-        //
-        // modal.present();
-    }
-
     private alert(title, subTitle) {
 
-        this.recipeService.message(title + " "+subTitle);
-
-        // let alert = this.alertCtrl.create({
-        //     title: title || 'Alert',
-        //     subTitle: subTitle || 'Message',
-        //     buttons: ['OK']
-        // });
-        // alert.present();
+        this.utilService.message(title + " "+subTitle);
     }
 
 }

@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {Http} from "@angular/http";
 import {BaseApiService} from "../services/base.api.service";
 import {Recipe} from "./recipe.model";
-import {Category} from "../ingredient/category.model";
+import {Ingredient} from "../ingredient/ingredient.model";
 
 @Injectable()
 export class RecipeApiService extends BaseApiService{
@@ -60,10 +60,10 @@ export class RecipeApiService extends BaseApiService{
         }
     }
 
-    linkRecipeToCategory(recipeId: string, category : Category) {
+    linkRecipeToCategory(recipeId: string, ingredient: Ingredient) {
 
         let requestPayLod = {
-            _id: recipeId, category : category
+            _id: recipeId, ingredient : ingredient
         }
 
         return this.http

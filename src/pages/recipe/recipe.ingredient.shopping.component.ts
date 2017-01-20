@@ -5,6 +5,7 @@ import {RecipeService} from "./recipe.service";
 import {Category} from "../ingredient/category.model";
 import {IngredientService} from "../ingredient/services/ingredient.service";
 import {Ingredient} from "../ingredient/ingredient.model";
+import {UtilService} from "../services/util.service";
 
 @Component({
     templateUrl: 'recipe-ingredient-shopping-component.html'
@@ -19,7 +20,8 @@ export class RecipeIngredientShoppingComponent {
         public recipeService: RecipeService,
         private loadingCtrl: LoadingController,
         public ingredientService: IngredientService,
-        private params: NavParams
+        private params: NavParams,
+        private utilService: UtilService
     )
     {
         //clean the array
@@ -42,11 +44,12 @@ export class RecipeIngredientShoppingComponent {
         this.recipeService.getRecipeAttributes(this.recipe._id)
             .subscribe(response => {
 
+                console.log("response ", response)
                 this.categories = response.categories;
                 console.log("Cate deep", this.categories)
 
             }, reason => {
-                this.recipeService.messageError(reason);
+                this.utilService.messageError(reason);
             }, () => this.displayList(loader));
     }
 
@@ -65,7 +68,7 @@ export class RecipeIngredientShoppingComponent {
         this.ingredientService.saveAttributeIngredient(ingredient.attributes[0])
             .subscribe(() => {
                 console.log("update successfully")
-            }, err =>  this.recipeService.messageError(err));
+            }, err =>  this.utilService.messageError(err));
     }
 
     selectAll() {
@@ -88,6 +91,6 @@ export class RecipeIngredientShoppingComponent {
         this.ingredientService.saveManyAttribute(attributeList)
             .subscribe(() => {
                 console.log("update successfully")
-            }, err =>  this.recipeService.messageError(err));
+            }, err =>  this.utilService.messageError(err));
     }
 }

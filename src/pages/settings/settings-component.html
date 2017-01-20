@@ -11,13 +11,9 @@
             Menu History
             <ion-icon  name="arrow-forward" color="favorite" item-right></ion-icon>
         </ion-item>
-        <ion-item (click)="backup()">
-            Backup
+        <ion-item (click)="setServerApi()">
+            Set Server Api
             <ion-icon  name="cloud-upload" color="favorite" item-right></ion-icon>
-        </ion-item>
-        <ion-item (click)="importBackup()">
-            Import Backup
-            <ion-icon  name="cloud-download" color="favorite" item-right></ion-icon>
         </ion-item>
         <ion-item (click)="leftIngredients()">
             Ingredient Generator
@@ -27,10 +23,5 @@
             Load Ingredients
             <ion-icon  name="nutrition" color="laranjado" item-right></ion-icon>
         </ion-item>
-        <ion-item (click)="deleteDb()" >
-            Delete Database
-            <ion-icon  name="alert" color="danger" item-right></ion-icon>
-        </ion-item>
     </ion-list>
-
 </ion-content>

@@ -30,10 +30,12 @@
 
             <ion-item  *ngFor="let ingredient of category.ingredients; let j=index">
                 <ion-label>{{ingredient.name}}</ion-label>
-                <ion-toggle [(ngModel)]="ingredient.attributes[0].itemSelectedForShopping"
+                <ion-toggle *ngIf="ingredient.attributes[0]"
+                            [(ngModel)]="ingredient.attributes[0].itemSelectedForShopping"
                             checked="{{ingredient.attributes[0].itemSelectedForShopping}}"
                             (click)="updateShopping(ingredient)"
                             name="toggle-{{i}}{{j}}"></ion-toggle>
+
             </ion-item>
         </ion-item-group>
     </form>

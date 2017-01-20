@@ -1,12 +1,12 @@
-import {Component, NgZone} from '@angular/core';
-import {NavController, Platform} from 'ionic-angular';
+import {Component, NgZone} from "@angular/core";
+import {NavController, Platform} from "ionic-angular";
 import {RecipeComponent} from "../recipe/recipe.component";
 import {RecipeListComponent} from "../recipe/recipe.list.component";
 import {Recipe} from "../recipe/recipe.model";
 import {RecipeService} from "../recipe/recipe.service";
 import {MainMeal} from "../recipe/main.meal.model";
-import {weekDays} from "../constants/week.day.constant";
 import {RecipeIngredientShoppingComponent} from "../recipe/recipe.ingredient.shopping.component";
+import {UtilService} from "../services/util.service";
 
 @Component({
     selector: 'menu-component',
@@ -15,15 +15,13 @@ import {RecipeIngredientShoppingComponent} from "../recipe/recipe.ingredient.sho
 export class MenuComponent{
 
     public recipes : Recipe [];
-
-   // public weekDays = weekDays;
-
-    mainMeals : MainMeal [];
+    public mainMeals : MainMeal [];
 
     constructor(private navCtrl: NavController,
                 private recipeService: RecipeService,
                 private platform: Platform,
-                private zone: NgZone) {
+                private zone: NgZone,
+                private utilService: UtilService) {
         this.mainMeals = this.recipeService.getMainMealList();
     }
 
@@ -43,7 +41,7 @@ export class MenuComponent{
             .subscribe(
                 recipesA => this.populateList(recipesA),
                 err => {
-                    this.recipeService.messageError(err);
+                    this.utilService.messageError(err);
                 }
             );
     }
@@ -77,7 +75,7 @@ export class MenuComponent{
 
             this.recipes = recipesA;
 
-            console.log("RECIPES", this.recipes)
+            //console.log("RECIPES", this.recipes)
 
             //sort by week day
             this.recipes.sort(function(a, b){

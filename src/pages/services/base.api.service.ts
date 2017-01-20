@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 @Injectable()
 export class BaseApiService {
 
-    public host : String = "http://localhost:3000";
+    public host : String = "https://week-menu-api.herokuapp.com";
 
     constructor() {
 
@@ -22,8 +22,6 @@ export class BaseApiService {
     }
 
     public handleError(error: Response | any) {
-        //console.error(error.json()   );
-
         let body = error.json();
 
         return Observable.throw(body);
