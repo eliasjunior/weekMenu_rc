@@ -10,7 +10,16 @@
 </ion-header>
 
 <ion-content class="ingredient" >
+    <ion-refresher (ionRefresh)="refreshList($event)">
+        <ion-refresher-content
+                pullingIcon="arrow-dropdown"
+                pullingText="Pull to refresh"
+                refreshingSpinner="circles"
+                refreshingText="Refreshing...">
+        </ion-refresher-content>
+    </ion-refresher>
     <form  name="listCat" #listForm="ngForm" no-padding>
+        <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
         <ion-item-group  *ngFor="let category of uncompletedList let j = index" >
 
             <ion-item-divider color="favorite" class="cat-not-completed">

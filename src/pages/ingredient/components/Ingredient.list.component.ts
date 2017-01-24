@@ -9,8 +9,8 @@ import {Category} from "../category.model";
 import {Ingredient} from "../ingredient.model";
 import {ModalConfirmation} from "../modal/modal.confirmation";
 import {Recipe} from "../../recipe/recipe.model";
-import {RecipeComponent} from "../../recipe/recipe.component";
-import {RecipeService} from "../../recipe/recipe.service";
+import {RecipeComponent} from "../../recipe/components/recipe.component";
+import {RecipeService} from "../../recipe/services/recipe.service";
 import {UtilService} from "../../services/util.service";
 
 @Component({
@@ -22,7 +22,6 @@ export class IngredientListComponent
 {
     categories : Category[];
     tempCategories: Category[];
-    recipeId: string;
     listLoaded: boolean = false;
     recipe: Recipe;
 
@@ -36,7 +35,9 @@ export class IngredientListComponent
         private utilService: UtilService
     )
     {
-        this.recipeId = navParams.get('recipeId');
+        this.recipe = navParams.get('recipe');
+
+        console.log(">>>>", this.recipe)
     }
 
     ionViewDidEnter(){
@@ -44,17 +45,16 @@ export class IngredientListComponent
         this.refreshList(null);
     }
 
-
-    addIngredient() {
-        this.navCtrl.push(IngredientComponent, {recipeId: this.recipeId});
+    public addIngredient() {
+        this.navCtrl.push(IngredientComponent, {recipe: this.recipe});
     }
 
-    saveCheckedIng(ingredient) {
+    public saveCheckedIng(ingredient) {
 
         //check box bug
         setTimeout(() => {
 
-                this.recipeService.linkRecipeToCategory(this.recipeId, ingredient)
+                this.recipeService.linkRecipeToCategory(this.recipe._id, ingredient)
                     .subscribe(res => {
 
                         console.log("Link is done!", res)
@@ -64,21 +64,21 @@ export class IngredientListComponent
         }, 500);
     }
 
-    backToRecipe() {
-        if(this.recipeId) {
+    public backToRecipe() {
+        if(this.recipe) {
             this.navCtrl.push(RecipeComponent, {recipe: this.recipe});
         }
     }
 
-    editIngredient(ingredient: Ingredient) {
-        this.navCtrl.push(IngredientComponent, {ingredient : ingredient, recipeId: this.recipeId});
+    public editIngredient(ingredient: Ingredient) {
+        this.navCtrl.push(IngredientComponent, {ingredient : ingredient, recipe: this.recipe});
     }
 
-    editCategory(category) {
-        this.navCtrl.push(IngredientComponent, {category : category, recipeId: this.recipeId});
+    public editCategory(category) {
+        this.navCtrl.push(IngredientComponent, {category : category, recipe: this.recipe});
     }
 
-    deleteCat(cat) {
+    public deleteCat(cat) {
 
         let modal = this.modalCtrl.create(ModalConfirmation,
             {'contentMessage' :  'Are you sure to delete ' + cat.name + 's category  and all its item ?'});
@@ -93,7 +93,7 @@ export class IngredientListComponent
         modal.present();
     }
 
-    getItems(ev: any) {
+    public getItems(ev: any) {
 
         this.initCategoryList();
 
@@ -115,27 +115,17 @@ export class IngredientListComponent
 
                     cat.ingredients = filter;
                 }
-
             });
 
             this.categories = cats;
         }
     }
 
-    private handleError(message, reason) {
-        console.error(message, reason);
-        this.utilService.messageError(message);
-    }
-
-    private initCategoryList() {
-        this.categories = this.tempCategories;
-    }
-
-    private refreshList(refresher) {
+    public refreshList(refresher) {
 
         let loader = this.getLoading();
 
-        this.ingredientService.getCategoriesIngredient(this.recipeId)
+        this.ingredientService.getCategoriesIngredient(this.recipe._id)
             .subscribe(cats => {
                 console.log("Loaded", cats)
                 this.categories = cats;
@@ -151,6 +141,15 @@ export class IngredientListComponent
         // this.zone.run(() => {
         //
         // });
+    }
+
+    private handleError(message, reason) {
+        console.error(message, reason);
+        this.utilService.messageError(message);
+    }
+
+    private initCategoryList() {
+        this.categories = this.tempCategories;
     }
 
     private getLoading() {

@@ -1,16 +1,16 @@
 /**
  * Created by eliasmj on 08/08/2016.
  */
-import {Recipe} from "./recipe.model";
-import {MainMeal, MealDetail} from "./main.meal.model";
+import {Recipe} from "../recipe.model";
+import {MainMeal, MealDetail} from "../main.meal.model";
 import {Injectable} from "@angular/core";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/fromPromise';
-import {BaseService} from "../services/base.service";
+import {BaseService} from "../../services/base.service";
 import {RecipeApiService} from "./recipe.api.service";
 import {Platform} from "ionic-angular";
-import {Ingredient} from "../ingredient/ingredient.model";
+import {Ingredient} from "../../ingredient/ingredient.model";
 
 @Injectable()
 export class RecipeService extends BaseService
@@ -19,6 +19,12 @@ export class RecipeService extends BaseService
 
     constructor(public recipeApiService : RecipeApiService, platform : Platform) {
         super(platform);
+    }
+
+    getRecipe(id: String) {
+        return this.recipeApiService.get(id)
+            .map(this.convertDocToRecipes)
+            .catch(this.errorHandler)
     }
 
     getList() {
@@ -42,7 +48,7 @@ export class RecipeService extends BaseService
     }
 
     public saveRecipe(recipe: Recipe){
-        return this.recipeApiService.saveRecipe(recipe)
+        return this.recipeApiService.saveRecipe(recipe);
     }
 
     public linkRecipeToCategory(recipeId: string, ingredient: Ingredient) {
@@ -58,6 +64,7 @@ export class RecipeService extends BaseService
         return this.recipeApiService.getRecipeAttributes(recipeId);
     }
 
+    //It needs this method because of the sort Recipe
     private convertDocsToRecipes(docs: any) : Recipe[]{
 
         let recipes : Recipe [] = [];
@@ -73,6 +80,7 @@ export class RecipeService extends BaseService
         return recipes;
     }
 
+    //It needs this method because of the sort Recipe
     private convertDocToRecipes(doc: any) : Recipe{
 
         let recipe = new Recipe();

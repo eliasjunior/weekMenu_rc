@@ -3,11 +3,11 @@
  */
 import {Component, Input} from "@angular/core";
 import {NavController, NavParams, LoadingController} from "ionic-angular";
-import {IngredientComponent} from "../ingredient/components/Ingredient.component";
-import {RecipeService} from "./recipe.service";
-import {Recipe} from "./recipe.model";
-import {IngredientListComponent} from "../ingredient/components/Ingredient.list.component";
-import {UtilService} from "../services/util.service";
+import {IngredientComponent} from "../../ingredient/components/Ingredient.component";
+import {RecipeService} from "../services/recipe.service";
+import {Recipe} from "../recipe.model";
+import {IngredientListComponent} from "../../ingredient/components/Ingredient.list.component";
+import {UtilService} from "../../services/util.service";
 
 @Component({
     selector: 'recipe-component',
@@ -18,6 +18,7 @@ export class RecipeComponent {
 
     @Input() recipe: Recipe;
     public mainMeals = [];
+    private loader;
 
     constructor(private navCtrl : NavController,
                 private navParam : NavParams,
@@ -39,33 +40,28 @@ export class RecipeComponent {
         this.mainMeals = recipeService.getMainMealList();
      }
 
-    ionViewDidEnter() {
+    ionViewDidLoad() {
 
-        //get from here instead the attribute class recipe
-        if(this.navParam.get('recipe')) {
+        //when uses the back button the param is null
+        if(this.recipe && this.recipe._id) {
 
-            this.refreshListIngredients(null);
-
+            this.loader = this.getLoading();
+            this.refreshList(null);
         }
     }
 
-    public refreshListIngredients(refresher) {
-
-        let loader = this.getLoading();
+    public refreshList(refresher) {
 
         this.recipeService.getRecipeCategories(this.recipe._id)
             .subscribe(
                 recipe => {
-
+                    this.dismissLoader(refresher);
                     this.recipe = recipe;
-
-                    this.dismissLoader(loader, refresher);
                 },
                 err => {
-                    console.error("Got here in the compononet", err)
-                    this.dismissLoader(loader, refresher);
+                    this.dismissLoader(refresher);
+                    this.utilService.messageError(err);
                 });
-
     }
 
 
@@ -76,7 +72,7 @@ export class RecipeComponent {
             this.utilService.message('Tap Save before add ingredients')
         } else {
 
-            this.navCtrl.push(IngredientListComponent, {recipeId : recipeId});
+            this.navCtrl.push(IngredientListComponent, {recipe: this.recipe});
         }
 
     }
@@ -85,12 +81,10 @@ export class RecipeComponent {
 
         console.log("Ingredient ", ingredient)
 
-        this.navCtrl.push(IngredientComponent, {ingredient : ingredient, recipeId: this.recipe._id});
+        this.navCtrl.push(IngredientComponent, {ingredient : ingredient, recipe: this.recipe});
     }
 
     public saveRecipe(){
-
-        let loader = this.getLoading();
 
         this.recipeService.saveRecipe(this.recipe)
             .subscribe(response =>
@@ -101,12 +95,12 @@ export class RecipeComponent {
 
                 this.utilService.message('Recipe saved successfully!');
 
-                this.dismissLoader(loader, null);
+                this.dismissLoader(null);
 
             },
             err => {
                 console.error("Got here in the compononet", err)
-                this.dismissLoader(loader, null);
+                this.dismissLoader(null);
             });
     }
 
@@ -120,11 +114,13 @@ export class RecipeComponent {
         return loader;
     }
 
-    private dismissLoader(loader, refresher) {
+    private dismissLoader(refresher) {
         if(refresher) {
             refresher.complete();
         }
-        loader.dismiss();
+        if(this.loader){
+            this.loader.dismiss();
+        }
         console.log("dismiss loading!")
     }
 }

@@ -9,6 +9,7 @@ import {NavParams, ActionSheetController, LoadingController} from "ionic-angular
 import {QuantityType} from "../../constants/quantity.type.constant";
 import {IngredientRecipeAttributes} from "../ingredient.recipe.model";
 import {UtilService} from "../../services/util.service";
+import {Recipe} from "../../recipe/recipe.model";
 
 @Component({
     selector: 'page-ingredient-component',
@@ -27,7 +28,7 @@ export class IngredientComponent {
 
     categories : Category [];
 
-    recipeId: string;
+    recipe: Recipe;
 
     attribute: IngredientRecipeAttributes;
 
@@ -40,11 +41,9 @@ export class IngredientComponent {
                 private loadingCtrl: LoadingController,
     ) {
 
-
-        this.recipeId = navParams.get('recipeId');
+        this.recipe = navParams.get('recipe');
         this.ingredient = navParams.get("ingredient");
         this.currentCategory = navParams.get("category");
-
 
         if(!this.ingredient) {
             this.ingredient = new Ingredient();
@@ -61,51 +60,40 @@ export class IngredientComponent {
 
     ionViewDidEnter() {
 
-        this.categories = [];
+        this.refreshList();
 
-        let loader = this.getLoading();
-
-        //for the select list.
-        this.ingredientService.getCategories()
-            .subscribe(
-                this.successGetCats.bind(this, loader),
-                err => {
-                    this.handleError("get categories load page",err);
-                    this.dismissLoader(loader);
-                }
-            );
     }
 
-    actionIngredient() {
-
-        let actionSheet = this.actionSheetCtrl.create({
-            title: 'Ingredient actions',
-            buttons: [
-                {
-                    text: 'Save',
-                    role: 'save',
-                    handler: () => {
-                        this.saveIngredientCategory();
-                        console.log('Destructive clicked');
-                    }
-                },
-                {
-                    text: 'Delete',
-                    handler: () => {
-                        this.deleteIngredient()
-                    }
-                },
-                {
-                    text: 'Cancel',
-                    role: 'cancel',
-                    handler: () => {
-                        console.log('Cancel clicked');
-                    }
-                }
-            ]
-        });
-        actionSheet.present();
-    }
+    // actionIngredient() {
+    //
+    //     let actionSheet = this.actionSheetCtrl.create({
+    //         title: 'Ingredient actions',
+    //         buttons: [
+    //             {
+    //                 text: 'Save',
+    //                 role: 'save',
+    //                 handler: () => {
+    //                     this.saveIngredientCategory();
+    //                     console.log('Destructive clicked');
+    //                 }
+    //             },
+    //             {
+    //                 text: 'Delete',
+    //                 handler: () => {
+    //                     this.deleteIngredient()
+    //                 }
+    //             },
+    //             {
+    //                 text: 'Cancel',
+    //                 role: 'cancel',
+    //                 handler: () => {
+    //                     console.log('Cancel clicked');
+    //                 }
+    //             }
+    //         ]
+    //     });
+    //     actionSheet.present();
+    // }
 
 
     onChangeCat() {
@@ -123,17 +111,17 @@ export class IngredientComponent {
         }
     }
 
-    deleteIngredient() {
-        this.utilService.message("Not Done")
+    public deleteIngredient() {
+        this.utilService.message("Feature not ready!");
     }
 
     //Ingredient 1 x N cat
-    saveIngredientCategory(){
+    public saveIngredientCategory(){
 
         let loader = this.getLoading();
 
-        if(this.recipeId) {
-            this.currentCategory.recipeId = this.recipeId;
+        if(this.recipe) {
+            this.currentCategory.recipeId = this.recipe._id;
         }
 
         if(this.ingredient._creator === 'addNew') {
@@ -184,13 +172,21 @@ export class IngredientComponent {
         }
     }
 
+    public createNewItem() {
+        this.currentCategory = new Category();
+        this.ingredient = new Ingredient();
+        this.attribute = new IngredientRecipeAttributes();
+
+        this.refreshList();
+    }
+
     private saveIngredientAndAttributes(doc) {
 
         console.log("Category Saved!", doc)
         console.log("Ingredient instance", this.ingredient)
 
         this.ingredient._creator = doc._id;
-        this.attribute.recipeId = this.recipeId;
+        this.attribute.recipeId = this.recipe._id;
         this.attribute.ingredientId = this.ingredient._id;
 
         console.log("attribute instance", this.attribute)
@@ -213,7 +209,7 @@ export class IngredientComponent {
     private createQuantity(){
         this.attribute = new IngredientRecipeAttributes();
         this.attribute.labelQuantity = QuantityType.KG,
-        this.attribute.recipeId = this.recipeId;
+        this.attribute.recipeId = this.recipe._id;
         this.attribute.quantity = this.getMin();
     }
 
@@ -230,7 +226,7 @@ export class IngredientComponent {
 
         if (this.ingredient._id) {
 
-            this.ingredientService.getIngredientRecipeAttributes(this.ingredient._id, this.recipeId)
+            this.ingredientService.getIngredientRecipeAttributes(this.ingredient._id, this.recipe._id)
                 .subscribe(attributes => {
 
                     this.attribute = attributes;
@@ -244,6 +240,22 @@ export class IngredientComponent {
         }
 
         this.dismissLoader(loader);
+    }
+
+    private refreshList() {
+        this.categories = [];
+
+        let loader = this.getLoading();
+
+        //for the select list.
+        this.ingredientService.getCategories()
+            .subscribe(
+                this.successGetCats.bind(this, loader),
+                err => {
+                    this.handleError("get categories load page",err);
+                    this.dismissLoader(loader);
+                }
+            );
     }
 
     private getLoading() {

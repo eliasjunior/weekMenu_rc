@@ -1,9 +1,9 @@
 <ion-header>
     <ion-navbar hideBackButton>
         <button ion-button icon-only clear (click)="addItem()">
-            <ion-icon name="create"></ion-icon>
+            <ion-icon name="restaurant"></ion-icon>
         </button>
-        <ion-title>Week's Menu</ion-title>
+        <ion-title>Weekly Menu</ion-title>
     </ion-navbar>
 </ion-header>
 
@@ -19,19 +19,23 @@
     </ion-refresher>
 
     <ion-list >
-        <ion-item *ngFor="let recipe of recipes" >
-
-            <ion-avatar item-left *ngIf="recipe.mainMeal">
-                <img src="assets/images/{{recipe.mainMeal.mealDetail.icon}}">
-            </ion-avatar>
-            <ion-label>
-                <span class="link-style" (click)="selectItem(recipe)"> {{recipe.name}}</span>
-                <p>{{recipe.weekDay}}</p>
-            </ion-label>
-            <button  item-right ion-button (click)="pickUpShoppingList(recipe)">For Shopping</button>
-            <span style="color: #2ca633" *ngIf="recipe.mainMealValue === 'side'">
-                * {{recipe.mainMealValue}}
-            </span>
-        </ion-item>
+        <ion-item-sliding *ngFor="let recipe of recipes">
+            <ion-item  >
+                <ion-avatar item-left *ngIf="recipe.mainMeal">
+                    <img src="assets/images/{{recipe.mainMeal.mealDetail.icon}}">
+                </ion-avatar>
+                <ion-label>
+                    <span class="link-style" (click)="selectItem(recipe)"> {{recipe.name}}</span>
+                    <p>{{recipe.weekDay}}</p>
+                </ion-label>
+                <button  item-right ion-button (click)="pickUpShoppingList(recipe)">For Shopping</button>
+                <span style="color: #2ca633" *ngIf="recipe.mainMealValue === 'side'">
+                    * {{recipe.mainMealValue}}
+                </span>
+            </ion-item>
+            <ion-item-options side="right">
+                <button ion-button (click)="removeFromMenu(recipe)" color="laranjado">Remove</button>
+            </ion-item-options>
+        </ion-item-sliding>
     </ion-list>
 </ion-content>

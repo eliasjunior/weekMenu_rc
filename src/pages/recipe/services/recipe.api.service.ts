@@ -1,16 +1,18 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {Http} from "@angular/http";
-import {BaseApiService} from "../services/base.api.service";
-import {Recipe} from "./recipe.model";
-import {Ingredient} from "../ingredient/ingredient.model";
+import {BaseApiService} from "../../services/base.api.service";
+import {Recipe} from "../recipe.model";
+import {Ingredient} from "../../ingredient/ingredient.model";
+import {UtilService} from "../../services/util.service";
 
 @Injectable()
 export class RecipeApiService extends BaseApiService{
 
     private recipes : any;
 
-    constructor(public http: Http) {
+    constructor(public http: Http,
+                private utilService: UtilService) {
         super()
     }
 
@@ -20,7 +22,7 @@ export class RecipeApiService extends BaseApiService{
         if(!this.recipes) {
 
             return this.http
-                .get(this.host + "/recipe")
+                .get(this.utilService.host + "/recipe")
                 .map(this.extractData)
                 .catch(this.handleError)
 
@@ -34,7 +36,7 @@ export class RecipeApiService extends BaseApiService{
 
     public get(id: String){
         return this.http
-            .get(this.host + "/recipe/"+id)
+            .get(this.utilService.host + "/recipe/"+id)
             .map(this.extractData)
             .catch(this.handleError)
     }
@@ -47,14 +49,14 @@ export class RecipeApiService extends BaseApiService{
         if(recipe._id) {
 
             return this.http
-                .put(this.host + "/recipe", recipe,  this.getHeadersOption())
+                .put(this.utilService.host + "/recipe", recipe,  this.getHeadersOption())
                 .map(this.extractData)
                 .catch(this.handleError)
 
         } else {
 
             return this.http
-                .post(this.host + "/recipe", recipe,  this.getHeadersOption())
+                .post(this.utilService.host + "/recipe", recipe,  this.getHeadersOption())
                 .map(this.extractData)
                 .catch(this.handleError)
         }
@@ -67,7 +69,7 @@ export class RecipeApiService extends BaseApiService{
         }
 
         return this.http
-            .put(this.host + "/recipe/ingredient", requestPayLod,  this.getHeadersOption())
+            .put(this.utilService.host + "/recipe/ingredient", requestPayLod,  this.getHeadersOption())
             .map(this.extractData)
             .catch(this.handleError)
 
@@ -75,14 +77,14 @@ export class RecipeApiService extends BaseApiService{
 
     public getRecipeCategories(recipeId: string) {
         return this.http
-            .get(this.host + "/recipe/category/"+recipeId)
+            .get(this.utilService.host + "/recipe/category/"+recipeId)
             .map(this.extractData)
             .catch(this.handleError)
     }
 
     public getRecipeAttributes(recipeId) {
         return this.http
-            .get(this.host + "/recipe/category/currentAttribute/"+recipeId)
+            .get(this.utilService.host + "/recipe/category/currentAttribute/"+recipeId)
             .map(this.extractData)
             .catch(this.handleError)
     }

@@ -6,14 +6,12 @@
 
 <ion-content padding class="item-details" >
 
-    <ion-refresher (ionRefresh)="refreshListIngredients($event)">
+    <ion-refresher (ionRefresh)="refreshList($event)">
         <ion-refresher-content
                 pullingIcon="arrow-dropdown"
                 pullingText="Pull to refresh"
                 refreshingSpinner="circles"
                 refreshingText="Refreshing...">
-
-
         </ion-refresher-content>
     </ion-refresher>
 
@@ -44,10 +42,9 @@
 
         <ion-list>
 
-
             <ion-list-header (click)="addIngredient(recipe._id)">
                 Recipe Ingredient's List
-                <ion-icon color="secondary" name="create" item-right></ion-icon>
+                <ion-icon color="secondary" name="add-circle" item-right></ion-icon>
             </ion-list-header>
 
             <ion-item-group *ngFor="let category of recipe.categories">
@@ -61,7 +58,6 @@
                     </ion-icon>
                 </ion-item>
             </ion-item-group>
-
 
         </ion-list>
 

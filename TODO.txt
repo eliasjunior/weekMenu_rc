@@ -2,7 +2,22 @@ TODO
 
 Ingredient component
  Easy
-  -- Create add new ingredient/category
+  -- Create add new ingredient/category *******
 
 Ingredient list component
   -- add recipe's name at the top
+
+  -- change button actions to buttons
+
+  -- list shopping, remove the loading, add refresh
+
+Category
+  -- OK **List, sort alphabetcally
+
+
+
+Recipe
+  -- BUG after saved a current one try to add a ingredient
+
+All
+ -- loading transition beetween pages

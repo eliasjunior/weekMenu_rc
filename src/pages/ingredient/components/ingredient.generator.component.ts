@@ -1,10 +1,8 @@
 import {Component} from "@angular/core";
-import {Platform, LoadingController, ModalController} from "ionic-angular";
+import {Platform, LoadingController} from "ionic-angular";
 import {Category} from "../category.model";
 import {Ingredient} from "../ingredient.model";
-import {ModalRecipes} from "../modal/modal.recipes";
-import {RecipeService} from "../../recipe/recipe.service";
-import {Recipe} from "../../recipe/recipe.model";
+import {RecipeService} from "../../recipe/services/recipe.service";
 import {MainMeal} from "../../recipe/main.meal.model";
 
 @Component({
@@ -31,7 +29,7 @@ export class IngredientGeneratorComponent {
         this.refreshList();
     }
 
-    private refreshList() {
+    public refreshList() {
 
         this.categories = [];
 

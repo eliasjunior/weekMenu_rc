@@ -1,6 +1,9 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Ingredient Details</ion-title>
+     <ion-title>Ingredient Details</ion-title>
+      <ion-buttons end >
+         <button ion-button (click)="createNewItem()">New</button>
+      </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -52,9 +55,16 @@
             </div>
 
         </ion-list>
-        <button ion-button type="submit"  (click)="actionIngredient()"
-                [disabled]="!formIng.form.valid" block >
-            Actions
+        <button ion-button icon-left type="submit" [disabled]="!formIng.form.valid"
+                (click)="saveIngredientCategory()">
+            <ion-icon name="checkmark"> </ion-icon>Save
         </button>
+        <button ion-button icon-left color="danger" (click)="deleteIngredient()">
+            <ion-icon name="remove-circle"></ion-icon>Delete
+        </button>
+        <!--<button ion-button type="submit"  (click)="actionIngredient()"-->
+                <!--[disabled]="!formIng.form.valid" block >-->
+            <!--Actions-->
+        <!--</button>-->
     </form>
 </ion-content>

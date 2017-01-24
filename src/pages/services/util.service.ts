@@ -4,19 +4,17 @@ import {Platform} from "ionic-angular";
 
 @Injectable()
 export class UtilService {
-    constructor(
-                private platform: Platform
-               ) {
 
-    }
+    public host : string;
 
+    constructor(private platform: Platform) {
 
-    public hideLoading(loader) {
-        loader.dismiss();
-    }
-
-    public handleError(err) {
-        console.error(err)
+        //if chrome is on mobile it wont work
+        if(this.platform.is('core')) {
+           this.host = 'http://192.168.0.12:3000';
+        } else {
+          this.host = "https://week-menu-api.herokuapp.com";
+        }
     }
 
     public message(message) {
@@ -45,7 +43,7 @@ export class UtilService {
 
         let options : ToastOptions =    {
             styling : {backgroundColor : '#ed0c0c'},
-            message : message,
+            message : this.getMessage(message),
             position: 'top'
         } ;
 
@@ -62,4 +60,16 @@ export class UtilService {
         }
     }
 
+
+
+    private getMessage(message) {
+
+        let result = "Default error Log";
+
+        if(message) {
+            result = message.message  || message;
+        }
+
+        return result;
+    }
 }

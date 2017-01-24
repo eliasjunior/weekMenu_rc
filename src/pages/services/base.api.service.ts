@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 @Injectable()
 export class BaseApiService {
 
-    public host : String = "https://week-menu-api.herokuapp.com";
+
 
     constructor() {
 

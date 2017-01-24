@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {RecipeService} from "../recipe/recipe.service";
+import {RecipeService} from "../recipe/services/recipe.service";
 import {NavController, ModalController} from "ionic-angular";
 import {IngredientGeneratorComponent} from "../ingredient/components/ingredient.generator.component";
 import {ModalHosts} from "../ingredient/modal/modal.hosts";
@@ -30,17 +30,14 @@ export class SettingsComponent
         modal.onDidDismiss(result => {
             console.log("result ", result);
 
-            this.recipeService.recipeApiService.host = result;
-            this.ingredientService.ingredientApiService.host = result;
+            this.utilService.host = result;
         });
 
         modal.present();
     }
 
     showHistory() {
-        console.log("showHistory");
         this.alert('info', 'Not done yet');
-
     }
 
     leftIngredients() {
@@ -52,9 +49,7 @@ export class SettingsComponent
 
         //TODO get from DB
 
-        this.utilService.message('Load successful!')
-
-        this.alert('Success', 'Loaded successfully')
+        this.utilService.message('Not done yet.')
     }
 
     private alert(title, subTitle) {

@@ -5,13 +5,14 @@ import {Observable} from "rxjs";
 import {Category} from "../category.model";
 import {Ingredient} from "../ingredient.model";
 import {IngredientRecipeAttributes} from "../ingredient.recipe.model";
+import {UtilService} from "../../services/util.service";
 
 @Injectable()
 export class IngredientApiService extends BaseApiService {
 
     private categories : Category [] = [];
 
-    constructor(public http: Http) {
+    constructor(public http: Http, private utilService: UtilService) {
         super()
     }
 
@@ -21,7 +22,7 @@ export class IngredientApiService extends BaseApiService {
         if(this.categories && this.categories.length === 0) {
 
             return this.http
-                .get(this.host + "/category/check/"+recipeId)
+                .get(this.utilService.host + "/category/check/"+recipeId)
                 .map(this.extractData)
                 .catch(this.handleError)
 
@@ -36,7 +37,7 @@ export class IngredientApiService extends BaseApiService {
     public getCategoryAndIngredientShopping() {
 
         return this.http
-            .get(this.host + "/category/week/shopping")
+            .get(this.utilService.host + "/category/week/shopping")
             .map(this.extractData)
             .catch(this.handleError)
 
@@ -45,21 +46,21 @@ export class IngredientApiService extends BaseApiService {
 
     public getIngredient(id: String){
         return this.http
-            .get(this.host + "/ingredient/"+id)
+            .get(this.utilService.host + "/ingredient/"+id)
             .map(this.extractData)
             .catch(this.handleError)
     }
 
     public getCategory(){
         return this.http
-            .get(this.host + "/category")
+            .get(this.utilService.host + "/category")
             .map(this.extractData)
             .catch(this.handleError)
     }
 
     public getIngredientRecipeAttributes(ingredientId, recipeId) {
         return this.http
-            .get(this.host + "/ingredient/recipe/"+ingredientId+"/"+recipeId)
+            .get(this.utilService.host + "/ingredient/recipe/"+ingredientId+"/"+recipeId)
             .map(this.extractData)
             .catch(this.handleError)
     }
@@ -73,14 +74,14 @@ export class IngredientApiService extends BaseApiService {
         if(category._id) {
 
             return this.http
-                .put(this.host + "/category", category,  this.getHeadersOption())
+                .put(this.utilService.host + "/category", category,  this.getHeadersOption())
                 .map(this.extractData)
                 .catch(this.handleError)
 
         } else {
 
             return this.http
-                .post(this.host + "/category", category,  this.getHeadersOption())
+                .post(this.utilService.host + "/category", category,  this.getHeadersOption())
                 .map(this.extractData)
                 .catch(this.handleError)
         }
@@ -97,13 +98,13 @@ export class IngredientApiService extends BaseApiService {
         if(ingredient._id) {
 
             return this.http
-                .put(this.host + "/ingredient", ingredientCommand,  this.getHeadersOption())
+                .put(this.utilService.host + "/ingredient", ingredientCommand,  this.getHeadersOption())
                 .map(this.extractData)
                 .catch(this.handleError);
         } else {
 
             return this.http
-                .post(this.host + "/ingredient", ingredientCommand,  this.getHeadersOption())
+                .post(this.utilService.host + "/ingredient", ingredientCommand,  this.getHeadersOption())
                 .map(this.extractData)
                 .catch(this.handleError);
         }
@@ -112,7 +113,7 @@ export class IngredientApiService extends BaseApiService {
     public saveIngredientAttribute(attribute: IngredientRecipeAttributes) {
         if(attribute._id) {
             return this.http
-                .put(this.host + "/ingredient/attribute", attribute, this.getHeadersOption())
+                .put(this.utilService.host + "/ingredient/attribute", attribute, this.getHeadersOption())
                 .map(this.extractData)
                 .catch(this.handleError)
         }
@@ -120,7 +121,7 @@ export class IngredientApiService extends BaseApiService {
 
     public saveManyAttributes(attributes: IngredientRecipeAttributes []) {
         return this.http
-            .put(this.host + "/ingredient/attribute/many", attributes, this.getHeadersOption())
+            .put(this.utilService.host + "/ingredient/attribute/many", attributes, this.getHeadersOption())
             .map(this.extractData)
             .catch(this.handleError)
     }

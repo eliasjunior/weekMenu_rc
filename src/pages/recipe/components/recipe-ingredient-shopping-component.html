@@ -5,17 +5,9 @@
 </ion-header>
 
 <ion-content no-padding>
-    <ion-card>
-
-        <ion-card-content>
-           Pick up ingredient to show in the shopping list
-        </ion-card-content>
-
-    </ion-card>
-
     <form  name="listForm" #listForm="ngForm">
-
         <ion-list no-margin no-padding>
+            <ion-item>Pick up ingredient to show in the shopping list</ion-item>
             <ion-item no-margin no-padding>
                 <ion-label>Select all</ion-label>
                 <ion-toggle [(ngModel)]="isSelectedAll" checked="{{isSelectedAll}}"
@@ -39,5 +31,4 @@
             </ion-item>
         </ion-item-group>
     </form>
-
 </ion-content>

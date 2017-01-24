@@ -1,11 +1,11 @@
 import {Component} from "@angular/core";
 import {NavParams, LoadingController} from "ionic-angular";
-import {Recipe} from "./recipe.model";
-import {RecipeService} from "./recipe.service";
-import {Category} from "../ingredient/category.model";
-import {IngredientService} from "../ingredient/services/ingredient.service";
-import {Ingredient} from "../ingredient/ingredient.model";
-import {UtilService} from "../services/util.service";
+import {Recipe} from "../recipe.model";
+import {RecipeService} from "../services/recipe.service";
+import {Category} from "../../ingredient/category.model";
+import {IngredientService} from "../../ingredient/services/ingredient.service";
+import {Ingredient} from "../../ingredient/ingredient.model";
+import {UtilService} from "../../services/util.service";
 
 @Component({
     templateUrl: 'recipe-ingredient-shopping-component.html'
@@ -34,7 +34,7 @@ export class RecipeIngredientShoppingComponent {
         this.refreshListIngredients();
     }
 
-    private refreshListIngredients() {
+    public refreshListIngredients() {
 
         let loader = this.loadingCtrl.create({
             content: "Please wait..."
@@ -59,15 +59,9 @@ export class RecipeIngredientShoppingComponent {
 
     updateShopping(ingredient: Ingredient) {
 
-        //TODO need to update the item inside the array and in the 'table/collection'
-        if(ingredient.attributes && ingredient.attributes[0].itemSelectedForShopping) {
-            //TODO I dont know why is this
-            //ingredient.isInMenuWeek = false;
-        }
-
         this.ingredientService.saveAttributeIngredient(ingredient.attributes[0])
             .subscribe(() => {
-                console.log("update successfully")
+                console.log("update successfully");
             }, err =>  this.utilService.messageError(err));
     }
 

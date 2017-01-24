@@ -20,15 +20,8 @@ export class IngredientService extends BaseService
     }
 
     getCategories() {
-
         return this.ingredientApiService
             .getCategory()
-            .map(response => {
-                let categories = this.convertDocsToCategoriesOnly(response);
-
-                return categories;
-            })
-            .catch(this.errorHandler)
     }
 
     getCategoriesIngredient(recipeId :string) {
@@ -36,8 +29,6 @@ export class IngredientService extends BaseService
         return this.ingredientApiService
             .getCategoryAllWithIngredientRecipe(recipeId)
             .map(response => {
-
-
                 //let categories = this.convertDocsToCategories(response);
                 //console.log(">>>>>> ?", categories)
                 return response;
@@ -62,8 +53,6 @@ export class IngredientService extends BaseService
                 return response;
             }).catch(this.errorHandler)
     }
-
-
 
     public getIngredientRecipeAttributes(ingredientId: String, recipeId: String) {
         return this.ingredientApiService
@@ -92,56 +81,6 @@ export class IngredientService extends BaseService
 
     private parseIngredientRecipeAttributes(ingRec) {
         return ingRec;
-    }
-
-    private convertDocsToCategories(docs: any) : Category[]{
-
-        let categories : Category [] = [];
-
-        //need to get the week's menu separated
-        docs.forEach(catDoc => {
-
-            let category = this.parseCategory(catDoc);
-
-            if(catDoc.ingredients && catDoc.ingredients.length > 0) {
-
-                catDoc.ingredients.forEach(ingredDoc => {
-
-                    let ingredient : Ingredient = this.parseIngredient(ingredDoc)
-
-                    ingredDoc.attributes.forEach(attrDoc => {
-
-                        ingredient.attributes.push(attrDoc);
-
-                    });
-
-                    category.ingredients.push(ingredient);
-                });
-            }
-            categories.push(category);
-        });
-
-        return categories;
-    }
-
-
-    private convertDocsToCategoriesOnly(docs: any) : Category[]{
-
-        let categories : Category [] = [];
-        //need to get the week's menu separated
-        docs.forEach(doc => {
-
-            categories.push(this.parseCategory(doc));
-        });
-
-        return categories;
-    }
-
-    private parseCategory(doc) : Category {
-        let category = new Category();
-        category.parseCategory(doc);
-
-        return category;
     }
 
     private parseIngredient(doc) : Ingredient{

@@ -1,13 +1,13 @@
 /**
  * Created by eliasmj on 08/08/2016.
  */
-import {RecipeService} from "./recipe.service";
+import {RecipeService} from "../services/recipe.service";
 import {Component} from "@angular/core";
 import {NavController, LoadingController, ModalController} from "ionic-angular";
 import {RecipeComponent} from "./recipe.component";
-import {Recipe} from "./recipe.model";
-import {IngredientComponent} from "../ingredient/components/Ingredient.component";
-import {ModalSelectDays} from "./modal/modal.select.days";
+import {Recipe} from "../recipe.model";
+import {IngredientComponent} from "../../ingredient/components/Ingredient.component";
+import {ModalSelectDays} from "../modal/modal.select.days";
 
 @Component({
   templateUrl: 'recipe-list-component.html'
@@ -15,7 +15,7 @@ import {ModalSelectDays} from "./modal/modal.select.days";
 
 export class RecipeListComponent {
 
-    public recipes : Recipe [];
+    public recipes : Recipe [] = [];
     public recipesTemp : Recipe [];
 
     constructor(private recipeService: RecipeService,
@@ -37,7 +37,7 @@ export class RecipeListComponent {
         this.navCtrl.push(IngredientComponent, {ingredientId : ingredientId});
     }
 
-    public resetWeekList(refresher) {
+    public resetWeekList() {
 
         //TODO not api to update many at the moment
 
@@ -53,16 +53,19 @@ export class RecipeListComponent {
 
             recipeWeek.forEach(recipe => {
 
+                //we can use as well as a filter in the weekly menu
                 recipe.weekDay = null;
+                //do not show in the weekly menu
+                recipe.isInMenuWeek = false;
 
                 this.recipeService.saveRecipe(recipe)
                     .subscribe(() => {
                         if(--loopCount === 0) {
-                            this.dismissLoader(loader, refresher);
-                            this.refreshList(refresher);
+                            this.dismissLoader(loader, null);
+                            this.refreshList(null);
                         }
                     }, err => {
-                        this.dismissLoader(loader, refresher);
+                        this.dismissLoader(loader, null);
                         this.handleError(err);
                     })
             });
@@ -108,7 +111,7 @@ export class RecipeListComponent {
         }
     }
 
-    private refreshList(refresher) {
+    public refreshList(refresher) {
 
         let loader = this.getLoading();
         this.recipes = [];
@@ -116,8 +119,11 @@ export class RecipeListComponent {
         this.recipeService.getList()
             .subscribe(
                 recipes => {
-
                     this.recipes = recipes;
+                    if(this.recipes){
+                        this.recipesTemp = this.recipes;
+                    }
+
                     this.dismissLoader(loader, refresher);
                 },
                 err => {

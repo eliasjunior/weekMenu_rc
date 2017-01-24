@@ -2,7 +2,7 @@
  * Created by eliasmj on 11/08/2016.
  */
 import {IngredientService} from "../services/ingredient.service";
-import {Component, NgZone} from "@angular/core";
+import {Component} from "@angular/core";
 import {NavParams, LoadingController, AlertController, Platform} from "ionic-angular";
 import {Category} from "../category.model";
 import {Ingredient} from "../ingredient.model";
@@ -16,6 +16,7 @@ import {UtilService} from "../../services/util.service";
 export class IngredientShoppingListComponent
 {
     categories : Category [] = [];
+    tempUnCompleted : Category [] = [];
     completedList: Category [] = [];
     uncompletedList: Category [] = [];
     recipeId: string;
@@ -27,19 +28,14 @@ export class IngredientShoppingListComponent
                 public platform: Platform,
                 public loadingCtrl: LoadingController,
                 public alertCtrl: AlertController,
-                public util: UtilService,
-                public zone : NgZone)
+                public util: UtilService)
     {
         this.recipeId = navParams.get('recipeId');
     }
 
-    ionViewDidEnter() {
+    ionViewDidLoad() {
 
-        this.platform.ready().then(() => {
-
-            this.refreshList();
-
-        });
+        this.refreshList(null);
     }
 
     onCheck(ingredient : Ingredient, category: Category, type: string) {
@@ -112,17 +108,11 @@ export class IngredientShoppingListComponent
         let catLeft = category.ingredients.filter(ing => ing.checkedInCartShopping === false).length;
 
         //this.totalLeft += catLeft;
-
         return catLeft;
     }
 
-    catCompleted(category: Category) : boolean {
+    public catCompleted(category: Category) : boolean {
         return category.ingredients.filter(ing => ing.checkedInCartShopping === false).length === 0;
-    }
-
-    private displayList(loader) {
-        loader.dismiss();
-        this.listLoaded = true;
     }
 
     private setTotalLeft() {
@@ -135,6 +125,38 @@ export class IngredientShoppingListComponent
 
     public getTotalLeft() {
         return this.totalLeft;
+    }
+
+    public getItems(ev: any) {
+
+        this.initCategoryList();
+
+        // set val to the value of the searchbar
+        let val = ev.target.value;
+
+        // if the value is an empty string don't filter the items
+        if (val && val.trim() !== '') {
+            let cats = [];
+
+            this.uncompletedList.forEach(cat => {
+                let filter = cat.ingredients.filter(ing => {
+                    return (ing.name.toLowerCase().indexOf(val.toLowerCase()) > - 1);
+                });
+
+                if(filter.length > 0) {
+
+                    cats.push(cat);
+
+                    cat.ingredients = filter;
+                }
+            });
+
+            this.uncompletedList = cats;
+        }
+    }
+
+    private initCategoryList() {
+        this.uncompletedList = this.tempUnCompleted;
     }
 
     private fillCompleted() {
@@ -154,6 +176,8 @@ export class IngredientShoppingListComponent
         this.setTotalLeft();
 
         this.sortList();
+
+        this.tempUnCompleted = this.uncompletedList;
     }
 
     private sortList() {
@@ -213,15 +237,11 @@ export class IngredientShoppingListComponent
         })
     }
 
-    private refreshList() {
+    public refreshList(refresher) {
 
         this.categories = [];
 
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
-        });
-
-        loader.present();
+        let loader = this.getLoading();
 
         this.ingredientService.getCategoryAndIngredientShopping()
             .subscribe(cats => {
@@ -229,10 +249,12 @@ export class IngredientShoppingListComponent
                 this.categories = cats;
 
                 this.fillCompleted();
-                this.util.hideLoading(loader)
+                this.dismissLoader(loader, refresher);
 
-            }, this.util.handleError
-             ,() =>  this.util.hideLoading(loader));
+            }, err => {
+                this.dismissLoader(loader, refresher);
+                this.util.messageError(err);
+            });
     }
 
     public getUpdateCheck(ingredient){
@@ -249,6 +271,26 @@ export class IngredientShoppingListComponent
             return formatted;
         } else
             return "";
+    }
+
+    private getLoading() {
+        let loader = this.loadingCtrl.create({
+            content: "Please wait..."
+        });
+
+        loader.present();
+
+        return loader;
+    }
+
+    private dismissLoader(loader, refresher) {
+
+        if(refresher){
+            refresher.complete();
+        }
+
+        loader.dismiss();
+        console.log("dismiss loading!")
     }
 
 }
