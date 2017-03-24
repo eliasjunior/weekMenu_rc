@@ -5,9 +5,10 @@ import {RecipeService} from "../services/recipe.service";
 import {Component} from "@angular/core";
 import {NavController, LoadingController, ModalController} from "ionic-angular";
 import {RecipeComponent} from "./recipe.component";
-import {Recipe} from "../recipe.model";
+import {Recipe} from "../model/recipe.model";
 import {IngredientComponent} from "../../ingredient/components/Ingredient.component";
 import {ModalSelectDays} from "../modal/modal.select.days";
+import {UtilService} from "../../services/util.service";
 
 @Component({
   templateUrl: 'recipe-list-component.html'
@@ -21,7 +22,8 @@ export class RecipeListComponent {
     constructor(private recipeService: RecipeService,
                 public navCtrl: NavController,
                 private loadingCtrl: LoadingController,
-                public modalCtrl: ModalController
+                public modalCtrl: ModalController,
+                private utilService: UtilService
     ) {
     }
 
@@ -39,7 +41,7 @@ export class RecipeListComponent {
 
     public resetWeekList() {
 
-        //TODO not api to update many at the moment
+        //TODO there is no api to update many at the moment
 
         let recipeWeek = this.recipes.filter(recipe => {
             return recipe.weekDay !== null || recipe.weekDay !== undefined;
@@ -90,12 +92,12 @@ export class RecipeListComponent {
         modal.present();
     }
 
-    selectItem(recipe: Recipe) {
+    public selectItem(recipe: Recipe) {
 
         this.navCtrl.push(RecipeComponent, {recipe});
     }
 
-    getItems(ev: any) {
+    public getItems(ev: any) {
 
         // set val to the value of the searchbar
         let val = ev.target.value;
@@ -133,21 +135,11 @@ export class RecipeListComponent {
     }
 
     private getLoading() {
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
-        });
-
-        loader.present();
-
-        return loader;
+        return this.utilService.triggerLoading(this.loadingCtrl);
     }
 
-    private dismissLoader(loader, refresher) {
-        if(refresher) {
-            refresher.complete();
-        }
-        loader.dismiss();
-        console.log("dismiss loading!")
+    private dismissLoader(loading, refresher) {
+        this.utilService.dismissLoader(loading, refresher);
     }
 
     private success(response) {

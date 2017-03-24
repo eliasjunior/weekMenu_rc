@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {ToastOptions, Toast} from "ionic-native";
-import {Platform} from "ionic-angular";
+import {Platform, LoadingController, Loading} from "ionic-angular";
 
 @Injectable()
 export class UtilService {
@@ -60,7 +60,25 @@ export class UtilService {
         }
     }
 
+    public triggerLoading(loadingCtrl: LoadingController) : Loading {
 
+        let loader = loadingCtrl.create({
+            content: "Please wait..."
+        });
+
+        loader.present();
+
+        return loader;
+    }
+
+    public dismissLoader(loading: Loading, refresher) {
+        if(refresher) {
+            refresher.complete();
+        }
+        if(loading) {
+            loading.dismiss();
+        }
+    }
 
     private getMessage(message) {
 

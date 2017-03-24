@@ -4,8 +4,8 @@
 import {IngredientService} from "../services/ingredient.service";
 import {Component} from "@angular/core";
 import {NavParams, LoadingController, AlertController, Platform} from "ionic-angular";
-import {Category} from "../category.model";
-import {Ingredient} from "../ingredient.model";
+import {Category} from "../model/category.model";
+import {Ingredient} from "../model/ingredient.model";
 import {UtilService} from "../../services/util.service";
 
 @Component({

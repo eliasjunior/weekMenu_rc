@@ -1,9 +1,9 @@
-import {Ingredient} from "../ingredient.model";
-import {Category} from "../category.model";
+import {Ingredient} from "../model/ingredient.model";
+import {Category} from "../model/category.model";
 import {Injectable} from "@angular/core";
 import {BaseService} from "../../services/base.service";
 import {IngredientApiService} from "./ingredient.api.service";
-import {IngredientRecipeAttributes} from "../ingredient.recipe.model";
+import {IngredientRecipeAttributes} from "../model/ingredient.recipe.model";
 import "rxjs/add/operator/map";
 import {Platform} from "ionic-angular";
 

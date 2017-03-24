@@ -2,10 +2,10 @@
  * Created by eliasmj on 05/08/2016.
  */
 import {Component, Input} from "@angular/core";
-import {NavController, NavParams, LoadingController} from "ionic-angular";
+import {NavController, NavParams, LoadingController, Refresher, Loading} from "ionic-angular";
 import {IngredientComponent} from "../../ingredient/components/Ingredient.component";
 import {RecipeService} from "../services/recipe.service";
-import {Recipe} from "../recipe.model";
+import {Recipe} from "../model/recipe.model";
 import {IngredientListComponent} from "../../ingredient/components/Ingredient.list.component";
 import {UtilService} from "../../services/util.service";
 
@@ -16,9 +16,9 @@ import {UtilService} from "../../services/util.service";
 
 export class RecipeComponent {
 
-    @Input() recipe: Recipe;
-    public mainMeals = [];
-    private loader;
+    private recipe: Recipe;
+    private mainMeals = [];
+    private loading: Loading;
 
     constructor(private navCtrl : NavController,
                 private navParam : NavParams,
@@ -44,13 +44,12 @@ export class RecipeComponent {
 
         //when uses the back button the param is null
         if(this.recipe && this.recipe._id) {
-
-            this.loader = this.getLoading();
+            this.getLoading();
             this.refreshList(null);
         }
     }
 
-    public refreshList(refresher) {
+    public refreshList(refresher: Refresher) {
 
         this.recipeService.getRecipeCategories(this.recipe._id)
             .subscribe(
@@ -105,22 +104,10 @@ export class RecipeComponent {
     }
 
     private getLoading() {
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
-        });
-
-        loader.present();
-
-        return loader;
+        this.loading = this.utilService.triggerLoading(this.loadingCtrl);
     }
 
     private dismissLoader(refresher) {
-        if(refresher) {
-            refresher.complete();
-        }
-        if(this.loader){
-            this.loader.dismiss();
-        }
-        console.log("dismiss loading!")
+        this.utilService.dismissLoader(this.loading, refresher);
     }
 }

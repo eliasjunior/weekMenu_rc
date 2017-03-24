@@ -1,10 +1,10 @@
 import {Component} from "@angular/core";
 import {NavParams, LoadingController} from "ionic-angular";
-import {Recipe} from "../recipe.model";
+import {Recipe} from "../model/recipe.model";
 import {RecipeService} from "../services/recipe.service";
-import {Category} from "../../ingredient/category.model";
+import {Category} from "../../ingredient/model/category.model";
 import {IngredientService} from "../../ingredient/services/ingredient.service";
-import {Ingredient} from "../../ingredient/ingredient.model";
+import {Ingredient} from "../../ingredient/model/ingredient.model";
 import {UtilService} from "../../services/util.service";
 
 @Component({

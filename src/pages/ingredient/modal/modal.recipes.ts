@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {ViewController, NavParams} from "ionic-angular";
-import {Recipe} from "../../recipe/recipe.model";
+import {Recipe} from "../../recipe/model/recipe.model";
 
 @Component({
     templateUrl: 'modal-recipes.html'

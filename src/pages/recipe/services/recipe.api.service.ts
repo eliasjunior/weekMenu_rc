@@ -2,8 +2,8 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {Http} from "@angular/http";
 import {BaseApiService} from "../../services/base.api.service";
-import {Recipe} from "../recipe.model";
-import {Ingredient} from "../../ingredient/ingredient.model";
+import {Recipe} from "../model/recipe.model";
+import {Ingredient} from "../../ingredient/model/ingredient.model";
 import {UtilService} from "../../services/util.service";
 
 @Injectable()

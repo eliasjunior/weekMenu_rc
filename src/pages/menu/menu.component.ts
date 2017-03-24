@@ -1,10 +1,10 @@
 import {Component, NgZone} from "@angular/core";
-import {NavController, LoadingController} from "ionic-angular";
+import {NavController, LoadingController, Loading} from "ionic-angular";
 import {RecipeComponent} from "../recipe/components/recipe.component";
 import {RecipeListComponent} from "../recipe/components/recipe.list.component";
-import {Recipe} from "../recipe/recipe.model";
+import {Recipe} from "../recipe/model/recipe.model";
 import {RecipeService} from "../recipe/services/recipe.service";
-import {MainMeal} from "../recipe/main.meal.model";
+import {MainMeal} from "../recipe/model/main.meal.model";
 import {RecipeIngredientShoppingComponent} from "../recipe/components/recipe.ingredient.shopping.component";
 import {UtilService} from "../services/util.service";
 
@@ -16,7 +16,7 @@ export class MenuComponent{
 
     public recipes : Recipe [];
     public mainMeals : MainMeal [];
-    private loader;
+    private loading : Loading;
 
     constructor(private navCtrl: NavController,
                 private recipeService: RecipeService,
@@ -27,8 +27,7 @@ export class MenuComponent{
     }
 
     ionViewDidLoad() {
-        this.loader = this.getLoading();
-
+        this.getLoading();
         this.refreshList(null);
     }
 
@@ -38,9 +37,10 @@ export class MenuComponent{
 
         this.recipeService.getList()
             .subscribe(
-                recipesA =>{
-                    this.populateList(recipesA);
-                    this.dismissLoader(refresher);
+                recipeList =>{
+                    this.populateList(recipeList);
+                    //this.dismissLoader(refresher);
+                    this.utilService.dismissLoader(this.loading, refresher);
                 },
                 err => {
                     this.utilService.messageError(err);
@@ -89,6 +89,10 @@ export class MenuComponent{
             );
     }
 
+    public pickUpShoppingList(recipe: Recipe) {
+        this.navCtrl.push(RecipeIngredientShoppingComponent, {recipe});
+    }
+
     private populateList(recipesA: Recipe []) {
 
         recipesA = recipesA.filter((recipe) => recipe.isInMenuWeek === true);
@@ -124,28 +128,11 @@ export class MenuComponent{
         });
     }
 
-    pickUpShoppingList(recipe: Recipe) {
-        this.navCtrl.push(RecipeIngredientShoppingComponent, {recipe});
-    }
-
     private getLoading() {
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
-        });
-
-        loader.present();
-
-        return loader;
+        this.loading = this.utilService.triggerLoading(this.loadingCtrl);
     }
 
     private dismissLoader(refresher) {
-        if(refresher) {
-            refresher.complete();
-        }
-        if(this.loader) {
-            this.loader.dismiss();
-        }
-        console.log("dismiss loading!")
+        this.utilService.dismissLoader(this.loading, refresher);
     }
-
 }

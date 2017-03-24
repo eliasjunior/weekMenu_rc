@@ -1,9 +1,9 @@
 import {Component} from "@angular/core";
 import {Platform, LoadingController} from "ionic-angular";
-import {Category} from "../category.model";
-import {Ingredient} from "../ingredient.model";
+import {Category} from "../model/category.model";
+import {Ingredient} from "../model/ingredient.model";
 import {RecipeService} from "../../recipe/services/recipe.service";
-import {MainMeal} from "../../recipe/main.meal.model";
+import {MainMeal} from "../../recipe/model/main.meal.model";
 
 @Component({
     selector: 'ingredient',

@@ -2,14 +2,14 @@
  * Created by eliasmj on 08/08/2016.
  */
 import {Component} from "@angular/core";
-import {Ingredient} from "../ingredient.model";
-import {Category} from "../category.model";
+import {Ingredient} from "../model/ingredient.model";
+import {Category} from "../model/category.model";
 import {IngredientService} from "../services/ingredient.service";
 import {NavParams, ActionSheetController, LoadingController} from "ionic-angular";
 import {QuantityType} from "../../constants/quantity.type.constant";
-import {IngredientRecipeAttributes} from "../ingredient.recipe.model";
+import {IngredientRecipeAttributes} from "../model/ingredient.recipe.model";
 import {UtilService} from "../../services/util.service";
-import {Recipe} from "../../recipe/recipe.model";
+import {Recipe} from "../../recipe/model/recipe.model";
 
 @Component({
     selector: 'page-ingredient-component',

@@ -1,8 +1,8 @@
 /**
  * Created by eliasmj on 08/08/2016.
  */
-import {Recipe} from "../recipe.model";
-import {MainMeal, MealDetail} from "../main.meal.model";
+import {Recipe} from "../model/recipe.model";
+import {MainMeal, MealDetail} from "../model/main.meal.model";
 import {Injectable} from "@angular/core";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/timer';
@@ -10,7 +10,7 @@ import 'rxjs/add/observable/fromPromise';
 import {BaseService} from "../../services/base.service";
 import {RecipeApiService} from "./recipe.api.service";
 import {Platform} from "ionic-angular";
-import {Ingredient} from "../../ingredient/ingredient.model";
+import {Ingredient} from "../../ingredient/model/ingredient.model";
 
 @Injectable()
 export class RecipeService extends BaseService
