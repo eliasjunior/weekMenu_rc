@@ -1,6 +1,6 @@
 <ion-header>
-    <ion-navbar hideBackButton>
-        <button ion-button icon-only clear (click)="addItem()">
+    <ion-navbar hideBackButton color="wmtheme">
+        <button ion-button icon-only clear (click)="addItem()" color="light">
             <ion-icon name="restaurant"></ion-icon>
         </button>
         <ion-title>Weekly Menu</ion-title>
@@ -28,7 +28,7 @@
                     <span class="link-style" (click)="selectItem(recipe)"> {{recipe.name}}</span>
                     <p>{{recipe.weekDay}}</p>
                 </ion-label>
-                <button  item-right ion-button (click)="pickUpShoppingList(recipe)">For Shopping</button>
+                <button  item-right ion-button (click)="pickUpShoppingList(recipe)" outline>For Shopping</button>
                 <span style="color: #2ca633" *ngIf="recipe.mainMealValue === 'side'">
                     * {{recipe.mainMealValue}}
                 </span>

@@ -11,7 +11,7 @@ export class UtilService {
 
         //if chrome is on mobile it wont work
         if(this.platform.is('core')) {
-           this.host = 'http://192.168.0.12:3000';
+           this.host = 'http://192.168.0.12:3002';
         } else {
           this.host = "https://week-menu-api.herokuapp.com";
         }

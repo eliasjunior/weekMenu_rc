@@ -1,8 +1,8 @@
 <ion-header>
-    <ion-navbar>
+    <ion-navbar color="wmtheme">
         <ion-title>Shopping List </ion-title>
         <ion-buttons end>
-            <label >
+            <label style="color: lightcyan">
                 Total {{getTotalLeft()}}
             </label>
         </ion-buttons>
@@ -10,14 +10,6 @@
 </ion-header>
 
 <ion-content class="ingredient" >
-    <ion-refresher (ionRefresh)="refreshList($event)">
-        <ion-refresher-content
-                pullingIcon="arrow-dropdown"
-                pullingText="Pull to refresh"
-                refreshingSpinner="circles"
-                refreshingText="Refreshing...">
-        </ion-refresher-content>
-    </ion-refresher>
     <form  name="listCat" #listForm="ngForm" no-padding>
         <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
         <ion-item-group  *ngFor="let category of uncompletedList let j = index" >
@@ -60,6 +52,7 @@
         </ion-item-group>
     </form>
     <ion-list padding >
-        <button ion-button block  (click)="resetIngredient()" >Reset List</button>
+        <button ion-button block (click)="resetIngredient()" >Reset List</button>
+        <button ion-button block color="favorite"  (click)="refreshList()" >Refresh List</button>
     </ion-list>
 </ion-content>

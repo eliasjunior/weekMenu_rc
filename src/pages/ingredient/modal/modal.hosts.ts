@@ -12,7 +12,8 @@ export class ModalHosts
 {
     public hosts: any [] = [
         {label: "work", url: 'http://10.157.196.224:3000'},
-        {label: "home", url: 'http://192.168.0.12:3000'},
+        {label: "home", url: 'http://192.168.0.12:3002'},
+        {label: "Prod", url: 'https://week-menu-api.herokuapp.com'},
         {label: "custom", url: 'custom'}];
     public selectedHost: string;
     public customField: string = 'http://';

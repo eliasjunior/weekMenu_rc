@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-navbar>
+    <ion-navbar color="wmtheme">
         <ion-title>Recipe List</ion-title>
         <ion-buttons end>
             <button ion-button icon-only (click)="addRecipe()">
@@ -29,17 +29,17 @@
                     <span color="roxiado" *ngIf="recipe.weekDay"> *{{recipe.weekDay}}</span>
                 </ion-label>
 
-                <button item-right clear ion-button  (click)="openModalDays(recipe)">
+                <button item-right icon-right ion-button outline (click)="openModalDays(recipe)">
+                    Calendar
                     <ion-icon  name="calendar" ></ion-icon>
+
                 </button>
-                <!--<button item-right clear ion-button  (click)="updateRecipe(recipe, 'select')">-->
-                    <!--<ion-icon  name="checkbox"  color="secondary"></ion-icon>-->
-                <!--</button>-->
             </ion-item>
-            <ion-item>
-                <button ion-button block (click)="resetWeekList()" >Reset Week List</button>
-            </ion-item>
+
         </ion-list>
 
+        <ion-list padding >
+            <button ion-button block color="laranjado"  (click)="resetWeekList()" >Reset Week List</button>
+        </ion-list>
     </form>
 </ion-content>

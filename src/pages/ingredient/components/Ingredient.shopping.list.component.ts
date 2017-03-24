@@ -35,7 +35,27 @@ export class IngredientShoppingListComponent
 
     ionViewDidLoad() {
 
-        this.refreshList(null);
+        this.refreshList();
+    }
+
+    public refreshList() {
+
+        this.categories = [];
+
+        let loader = this.getLoading();
+
+        this.ingredientService.getCategoryAndIngredientShopping()
+            .subscribe(cats => {
+                console.log("Loaded", cats)
+                this.categories = cats;
+
+                this.fillCompleted();
+                this.dismissLoader(loader);
+
+            }, err => {
+                this.dismissLoader(loader);
+                this.util.messageError(err);
+            });
     }
 
     onCheck(ingredient : Ingredient, category: Category, type: string) {
@@ -237,26 +257,6 @@ export class IngredientShoppingListComponent
         })
     }
 
-    public refreshList(refresher) {
-
-        this.categories = [];
-
-        let loader = this.getLoading();
-
-        this.ingredientService.getCategoryAndIngredientShopping()
-            .subscribe(cats => {
-                console.log("Loaded", cats)
-                this.categories = cats;
-
-                this.fillCompleted();
-                this.dismissLoader(loader, refresher);
-
-            }, err => {
-                this.dismissLoader(loader, refresher);
-                this.util.messageError(err);
-            });
-    }
-
     public getUpdateCheck(ingredient){
 
         if(ingredient.updateCheckDate){
@@ -283,12 +283,7 @@ export class IngredientShoppingListComponent
         return loader;
     }
 
-    private dismissLoader(loader, refresher) {
-
-        if(refresher){
-            refresher.complete();
-        }
-
+    private dismissLoader(loader) {
         loader.dismiss();
         console.log("dismiss loading!")
     }
