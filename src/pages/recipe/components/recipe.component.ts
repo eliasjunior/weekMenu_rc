@@ -1,7 +1,7 @@
 /**
  * Created by eliasmj on 05/08/2016.
  */
-import {Component, Input} from "@angular/core";
+import {Component} from "@angular/core";
 import {NavController, NavParams, LoadingController, Refresher, Loading} from "ionic-angular";
 import {IngredientComponent} from "../../ingredient/components/Ingredient.component";
 import {RecipeService} from "../services/recipe.service";
@@ -98,7 +98,7 @@ export class RecipeComponent {
 
             },
             err => {
-                console.error("Got here in the compononet", err)
+                console.error("Got here in the component", err)
                 this.dismissLoader(null);
             });
     }

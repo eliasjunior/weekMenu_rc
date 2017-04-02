@@ -39,8 +39,7 @@ export class MenuComponent{
             .subscribe(
                 recipeList =>{
                     this.populateList(recipeList);
-                    //this.dismissLoader(refresher);
-                    this.utilService.dismissLoader(this.loading, refresher);
+                    this.dismissLoader(refresher);
                 },
                 err => {
                     this.utilService.messageError(err);

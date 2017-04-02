@@ -5,7 +5,7 @@ import {Component} from "@angular/core";
 import {Ingredient} from "../model/ingredient.model";
 import {Category} from "../model/category.model";
 import {IngredientService} from "../services/ingredient.service";
-import {NavParams, ActionSheetController, LoadingController} from "ionic-angular";
+import {NavParams, LoadingController} from "ionic-angular";
 import {QuantityType} from "../../constants/quantity.type.constant";
 import {IngredientRecipeAttributes} from "../model/ingredient.recipe.model";
 import {UtilService} from "../../services/util.service";
@@ -36,7 +36,6 @@ export class IngredientComponent {
 
     constructor(public  ingredientService : IngredientService,
                 private navParams: NavParams,
-                private actionSheetCtrl: ActionSheetController,
                 private utilService: UtilService,
                 private loadingCtrl: LoadingController,
     ) {
@@ -59,42 +58,8 @@ export class IngredientComponent {
     }
 
     ionViewDidEnter() {
-
         this.refreshList();
-
     }
-
-    // actionIngredient() {
-    //
-    //     let actionSheet = this.actionSheetCtrl.create({
-    //         title: 'Ingredient actions',
-    //         buttons: [
-    //             {
-    //                 text: 'Save',
-    //                 role: 'save',
-    //                 handler: () => {
-    //                     this.saveIngredientCategory();
-    //                     console.log('Destructive clicked');
-    //                 }
-    //             },
-    //             {
-    //                 text: 'Delete',
-    //                 handler: () => {
-    //                     this.deleteIngredient()
-    //                 }
-    //             },
-    //             {
-    //                 text: 'Cancel',
-    //                 role: 'cancel',
-    //                 handler: () => {
-    //                     console.log('Cancel clicked');
-    //                 }
-    //             }
-    //         ]
-    //     });
-    //     actionSheet.present();
-    // }
-
 
     onChangeCat() {
 
@@ -259,18 +224,10 @@ export class IngredientComponent {
     }
 
     private getLoading() {
-        let loader = this.loadingCtrl.create({
-            content: "Please wait..."
-        });
-
-        loader.present();
-
-        return loader;
+        return this.utilService.triggerLoading(this.loadingCtrl);
     }
 
-    private dismissLoader(loader) {
-        loader.dismiss();
-        console.log("dismiss loading!")
+    private dismissLoader(loading) {
+        this.utilService.dismissLoader(loading, null);
     }
-
 }
